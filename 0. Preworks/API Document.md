@@ -18,7 +18,7 @@ Template
 | URL            | https://localhost:8080/user/adduser                          |
 | Description    | Create a user account/Register                               |
 | Excepted Send  | {<br />&emsp;"username":<br />&emsp;"password":<br />&emsp;"email":<br />} |
-| Expected Reply | {<br />&emsp; "code": 200<br />&emsp;"message": success<br />&emsp;"data":{<br />                  "uid":<br />                  "userType":<br />                  "salt":<br />&emsp;&ensp;            }<br />} |
+| Expected Reply | {<br />&emsp; "code": 200<br />&emsp;"message": success<br />&emsp;"data":{<br />                  "userType":<br />                  "salt":<br />&emsp;&ensp;            }<br />} |
 
 | API  Name      | Add driver                                                   |
 | -------------- | ------------------------------------------------------------ |
