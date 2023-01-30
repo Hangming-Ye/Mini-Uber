@@ -1,6 +1,7 @@
 # Ride Sharing Service
 
 Functions of this web-app:
+
 User: 
 1. Create Account
 2. Login & Logout
