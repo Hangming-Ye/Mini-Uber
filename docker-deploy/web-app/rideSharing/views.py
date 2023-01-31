@@ -9,16 +9,16 @@ def user_reg(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get("email")
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
         # username already exists:
         if User.objects.filter(username=username):
             # ?????? user_reg.html ??????
             return render(request, 'rideSharing/user_reg.html', {'error_reg': "Username already exists"})
         else:
-            if password1 == password2:
+            if password == confirm_password:
                 # The passwords entered twice match:
-                user = User.objects.create_user(username=username, email=email, password=password1, is_driver=False)
+                user = User.objects.create_user(username=username, email=email, password=password, is_driver=False)
                 user.save()
                 return redirect('login')
             else:
@@ -59,5 +59,16 @@ def homepage(request):
         return redirect('login')
 
 
+# Driver Registraon:
 def driver_register(request):
     
+    return
+
+# get User Info:
+def get_user_info(request):
+
+    return
+
+
+
+# edit User Info:
