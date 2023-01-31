@@ -58,3 +58,6 @@ def homepage(request):
     else:
         return redirect('login')
 
+
+def driver_register(request):
+    
