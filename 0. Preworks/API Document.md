@@ -28,7 +28,7 @@ Template
 
 | API  Name      | Log in                                                       |
 | -------------- | ------------------------------------------------------------ |
-| Method         | GET                                                          |
+| Method         | POST                                                         |
 | URL            | http://vcm-30609.vm.duke.edu:8000/user/login                 |
 | Description    | User log in                                                  |
 | Excepted Send  | {<br />&emsp;"username":<br />&emsp;"password":      <br />} |
