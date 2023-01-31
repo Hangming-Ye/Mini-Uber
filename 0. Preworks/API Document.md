@@ -34,6 +34,15 @@ Template
 | Excepted Send  | {<br />&emsp;"username":<br />&emsp;"password":      <br />} |
 | Expected Reply | {<br />&emsp; "code": 200<br />&emsp;"message": success<br />&emsp;"data":{<br />                  "uid":<br />&emsp;&ensp;            }<br />} |
 
+| API  Name      | Log out                                                      |
+| -------------- | ------------------------------------------------------------ |
+| Method         | POST                                                         |
+| URL            | http://vcm-30609.vm.duke.edu:8000/user/logout                |
+| Description    | User log in                                                  |
+| Excepted Send  | {                                                    <br />} |
+| Expected Reply | {<br />&emsp; "code": 200<br />&emsp;"message": success<br />&emsp;"data":{<br />&emsp;&ensp;            }<br />} |
+
+
 ???怎么标注optional信息
 
 | API  Name      | Add driver                                                   |
