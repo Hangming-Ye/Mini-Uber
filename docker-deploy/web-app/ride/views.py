@@ -71,3 +71,13 @@ def modifyRide(request):
             ride.save()
         HttpResponse("data error")
     return HttpResponse("method wrong")
+
+
+
+'''
+def cancel_ride(request):
+    if request.user.is_authenticated is False:
+        return redirect('/rideSharing/login')
+    else:
+        
+'''
