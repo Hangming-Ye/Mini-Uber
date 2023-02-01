@@ -26,6 +26,7 @@ def user_reg(request):
                 return render(request, 'rideSharing/user_reg.html', {'error_reg': "The passwords entered twice do not match!"})
     return render(request, 'rideSharing/user_reg.html')
 
+
 # user login:
 def login(request):
     if request.method == 'POST':
@@ -59,16 +60,18 @@ def homepage(request):
         return redirect('login')
 
 
-# Driver Registraon:
-def driver_register(request):
-    
-    return
-
+'''
 # get User Info:
 def get_user_info(request):
 
     return
 
 
+# Modify:
 
-# edit User Info:
+# Driver Registration:
+def driver_register(request):
+    return
+
+# Edit User Info:
+'''
