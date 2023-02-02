@@ -37,8 +37,7 @@ def login(request):
         if User.objects.filter(username=username):
             user = auth.authenticate(username=username, password=password)
             # user.is_active???????????
-            # if user is not None:???????
-            if user:
+            if user is not None:
                 auth.login(request, user)
                 return redirect('homepage', {'user', user})
             else:
@@ -86,7 +85,6 @@ def driver_de_register(request):
     # ??????????????? incomplete???????
     # ?????????????value是这种形式嘛？这样写可以嘛？？？？？？
     rid_list = list(filter(lambda x: user.ride_list[x] == 'driver', user.ride_list))
-
     # Change all these rides status into open and driver field in ride object into None
     # remove thses rides from this user's ride dictionary
     for rid in rid_list:
