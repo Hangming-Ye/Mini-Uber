@@ -2,14 +2,14 @@ from ride.models import Ride
 from django.shortcuts import render, redirect
 # from django.http import HttpResponse
 from django.contrib import auth
-from .models import User
+from .models import my_user as User
 # Create your views here.
 
 # user register:
 def user_reg(request):
     if request.method == 'POST':
         username = request.POST.get('username')
-        email = request.POST.get("email")
+        email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
         # username already exists:
@@ -20,17 +20,17 @@ def user_reg(request):
             if password == confirm_password:
                 # The passwords entered twice match:
                 # vehicle_type=None, license_plate_nums=None, special_info=None, max_passenger=None
-                user = User.objects.create_user(username=username, email=email, password=password, is_driver=False)
+                user = User.objects.create_user(username=username, email=email, password=password)
                 user.save()
-                return redirect('login')
+                return redirect('/login/')
             else:
                 # The passwords entered twice do not match:
                 return render(request, 'rideSharing/user_reg.html', {'error_reg': 'The passwords entered twice do not match!'})
     return render(request, 'rideSharing/user_reg.html')
 
-
 # user login:
 def login(request):
+    return render(request, 'rideSharing/login.html', {"num": "views_num"})
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -110,7 +110,7 @@ def modify_driver(request):
     user = User.objects.get(pk = request.user.pk)
     if request.method == 'POST':
         username = request.POST.get('username')
-        user.user_name = username
+        user.username = username
         vehicle_type = request.POST.get('vehicle_type')
         license_plate_nums = request.POST.get('license_plate_nums')
         special_info = request.POST.get('special_info')

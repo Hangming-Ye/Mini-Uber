@@ -1,8 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
-class User(models.Model):
+class my_user(User):
     #????? user id?????
     #????? driver ?????
     CAR_TYPE_CHOICES =(
@@ -18,11 +19,11 @@ class User(models.Model):
     ("Pickup Truck", "Pickup Truck"),
     )
 
-    username = models.CharField(max_length=16,unique=True)
-    email = models.EmailField()
-    password = models.CharField(max_length=256)
+    #user_name = models.CharField(max_length=16,unique=True)
+    #email = models.EmailField()
+    #password = models.CharField(max_length=256)
 
-    is_driver = models.BooleanField()
+    is_driver = models.BooleanField(default=False)
 
     vehicle_type = models.CharField(choices=CAR_TYPE_CHOICES, max_length=20, blank = True, null=True, default=None)
     license_plate_nums = models.CharField(blank = True, max_length=8, null=True, default=None)
