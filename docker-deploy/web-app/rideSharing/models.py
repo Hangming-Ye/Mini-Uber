@@ -5,13 +5,26 @@ from django.db import models
 class User(models.Model):
     #????? user id?????
     #????? driver ?????
-    user_name = models.CharField(max_length=16,unique=True)
+    CAR_TYPE_CHOICES =(
+    ("SUV", "SUV"),
+    ("Hatchback", "Hatchback"),
+    ("Crossover", "Crossover"),
+    ("Convertible", "Convertible"),
+    ("Sedan", "Sedan"),
+    ("Sports Car", "Sports Car"),
+    ("Coupe", "Coupe"),
+    ("Minivan", "Minivan"),
+    ("Station Wagon", "Station Wagon"),
+    ("Pickup Truck", "Pickup Truck"),
+    )
+
+    username = models.CharField(max_length=16,unique=True)
     email = models.EmailField()
     password = models.CharField(max_length=256)
 
     is_driver = models.BooleanField()
 
-    vehicle_type = models.CharField(blank = True, max_length=10, null=True, default=None)
+    vehicle_type = models.CharField(choices=CAR_TYPE_CHOICES, max_length=20, blank = True, null=True, default=None)
     license_plate_nums = models.CharField(blank = True, max_length=8, null=True, default=None)
     special_info = models.TextField(blank = True, null=True, default=None)
     max_passenger = models.IntegerField(blank = True, null=True, default=None)

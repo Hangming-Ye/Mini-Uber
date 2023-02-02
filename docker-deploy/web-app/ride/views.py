@@ -124,11 +124,3 @@ def SearchRideSharer(request):
         return result
     else:
         return HttpResponse("method wrong")
-
-'''
-def cancel_ride(request):
-    if request.user.is_authenticated is False:
-        return redirect('/rideSharing/login')
-    else:
-        
-'''
