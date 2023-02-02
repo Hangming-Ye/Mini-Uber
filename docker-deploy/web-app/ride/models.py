@@ -20,14 +20,14 @@ class Ride(models.Model):
     def __str__(self) -> str:
         return "Ride ID: " + str(self.id) +" Ride Owner: " + str(self.owner)
     
-    def addRidtoUser(rid, uid):
+    def addRidtoUser(rid, uid, role):
         user_obj = User.objects.get(pk=uid)
         rid_dict = user_obj.ride_list
         if rid_dict is None:
             rid_dict = {}
-        if rid_dict[rid]:
+        if rid in rid_dict:
             return False # already exist
-        rid_dict[str(rid)] = True
+        rid_dict[rid] = role
         user_obj.ride_list = rid_dict
         user_obj.save()
         return True
