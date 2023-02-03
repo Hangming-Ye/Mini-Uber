@@ -9,7 +9,7 @@
   <body>
     <h1 class="text-center text-success">User Register</h1>
     <div class="container-fluid">
-        <form method="POST" action="/rideSharing/user_reg" class="row g-3">
+        <form method="POST" action="" class="row g-3">
           {% csrf_token %}
           <div class="col-md-6">
             <label for="username" class="form-label">User Name</label>
@@ -28,13 +28,14 @@
             <input name="confirm_password" type="password" class="form-control" id="inputPassword4">
           </div>
           <div class="col-12">
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" class="btn btn-primary">Register</button>&nbsp;&nbsp;&nbsp;<a href="/rideSharing/login/">Already have an account? Go to log in</a>
           </div>
         </form>
         <div class="form-group">
           {% if error_reg %}
+          <br>
           <div class="wrong-reg">
-            {{error_reg}}
+            <FONT COLOR="#ff0000">{{error_reg}}</FONT>
           </div>
           {% endif %}
         </div>
