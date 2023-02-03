@@ -39,7 +39,7 @@ def login(request):
             # user.is_active???????????
             if user is not None:
                 auth.login(request, user)
-                return redirect('/rideSharing/homepage/', {'user', user})
+                return redirect('/ride/homepage/', {'user', user})
             else:
                 return render(request, 'rideSharing/login.html', {'login_password_error' : 'Password is incorrect!!!'})
         else:
@@ -55,12 +55,12 @@ def logout(request):
     return redirect('/rideSharing/login/')
 
 # homepage:
-def homepage(request):
+#def homepage(request):
     # Check whether the user is logged in
-    if request.user.is_authenticated:
-        return render(request, 'rideSharing/home.html')
-    else:
-        return redirect('/rideSharing/login/')
+#    if request.user.is_authenticated:
+#        return render(request, 'rideSharing/home.html')
+#    else:
+#        return redirect('/rideSharing/login/')
 
 
 # User should be able to view their driver status as well as personal & vehicle info:
