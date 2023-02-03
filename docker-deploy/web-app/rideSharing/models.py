@@ -22,7 +22,6 @@ class my_user(User):
     #user_name = models.CharField(max_length=16,unique=True)
     #email = models.EmailField()
     #password = models.CharField(max_length=256)
-
     is_driver = models.BooleanField(default=False)
 
     vehicle_type = models.CharField(choices=CAR_TYPE_CHOICES, max_length=20, blank = True, null=True, default=None)
@@ -32,4 +31,4 @@ class my_user(User):
 
     ride_list = models.JSONField(blank = True, null=True, default=None)
     def __str__(self):
-        return self.username
+        return str(self.id)

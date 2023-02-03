@@ -1,12 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import *
 from .models import Ride
-from rideSharing.models import User
+from rideSharing.models import my_user as User
 import datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.http.multipartparser import MultiPartParser
-import sys
-import utils
+from .rideUtils import *
+from django.db.models import Q
 # 未实现：异常抛出处理, check valid
 
 # Create your views here.
@@ -19,14 +19,30 @@ def getByRid(request, rid):
 
 def getByUid(request, uid):
     if request.method == 'GET':
-        data = request.GET.dict()
-        user_obj = User.objects.get(pk=data['uid'])
-        ride_list = user_obj.ride_list.keys()
+        user_obj = User.objects.get(pk=uid)
+        ride_list = list(user_obj.ride_list.keys())
         result = dict()
         count = 1
         for rid in ride_list:
-            result[count] = [Ride.objects.get(pk=rid),ride_list[rid]]
-        return result
+            if user_obj.ride_list[rid] != "driver":
+                result[count] = [Ride.objects.get(pk=rid),user_obj.ride_list[rid]]
+                count += 1
+        return HttpResponse(result)
+    else:
+        return HttpResponse("method wrong")
+
+def getByDid(request, uid):
+    if request.method == 'GET':
+        user_obj = User.objects.get(pk=uid)
+        ride_list = list(user_obj.ride_list.keys())
+        result = dict()
+        count = 1
+        for rid in ride_list:
+            if user_obj.ride_list[rid] == "driver":
+                result[count] = [Ride.objects.get(pk=rid),user_obj.ride_list[rid]]
+                count += 1
+        print(result)
+        return HttpResponse(result)
     else:
         return HttpResponse("method wrong")
 
@@ -36,14 +52,13 @@ def addRide(request):
         data = request.POST.dict()
         dt = datetime.datetime.strptime(data['arrivalTime'], "%Y-%m-%d %H:%M:%S")
         data['arrivalTime'] = dt
-        if 'driver' in data or 'share' in data:
-            return HttpResponse("data error")
         data['totalPassNum'] = data['ownerPassNum']
         ride_obj = Ride.objects.create(**data)
-
-        ride_obj.save()
-        Ride.addRidtoUser(ride_obj.rid, data.uid,"owner")
-        return HttpResponse(ride_obj)
+        if Ride.addRidtoUser(ride_obj.pk, data['owner'],"owner"):
+            ride_obj.save()
+            return HttpResponse(ride_obj.pk)
+        else:
+            return HttpResponse("User already exist")
     return HttpResponse("method wrong")
 
 @csrf_exempt
@@ -58,15 +73,15 @@ def modifyRide(request):
                     share_dict = {}
                 if data['uid'] in share_dict:
                     ride.totalPassNum -= share_dict[data['uid']]
-                share_dict[data['uid']] = data['share_num']
-                ride.totalPassNum += data['share_num']
+                share_dict[data['uid']] = int(data['share_num'])
+                ride.totalPassNum += int(data['share_num'])
                 ride.shared = share_dict
                 ride.save()
-                Ride.addRidtoUser(ride.rid, data.uid,"share")
+                Ride.addRidtoUser(ride.pk, data['uid'],"share")
                 return HttpResponse("success add shared")
             elif int(data['uid']) == ride.owner:
                 ride.totalPassNum -= ride.ownerPassNum
-                ride.totalPassNum += data['ownerPassNum']
+                ride.totalPassNum += int(data['ownerPassNum'])
                 ride.rideType = data['rideType']
                 ride.ownerPassNum = data['ownerPassNum']
                 ride.dest = data['dest']
@@ -74,36 +89,38 @@ def modifyRide(request):
                 ride.specialRequest = data['specialRequest']
                 ride.carType = data['carType']
                 ride.save()
-                return HttpResponse("modify success")
+                return HttpResponse("owner modify success")
         elif int(data['status']) == 1 and ride.status == 0:
             ride.status=int(data['status'])
             ride.driver=int(data['uid'])
-            ride.save()
-            Ride.addRidtoUser(ride.pk, ride.driver,"driver")
-            return HttpResponse("add driver")
+            if ride.driver == int(data['uid']):
+                ride.save()
+                Ride.addRidtoUser(ride.pk, ride.driver,"driver")
+                return HttpResponse("Ride Confirmed")
         elif int(data['status']) == 2 and ride.status == 1:
-            if ride.driver == uid: 
+            if ride.driver == int(data['uid']): 
                 ride.status=int(data['status'])
-                for uid in ride.shared.keys():
+                for uid in list(ride.shared.keys()):
                     Ride.rmRidfromUser(ride.pk, uid)
                 Ride.rmRidfromUser(ride.pk,ride.owner)
                 Ride.rmRidfromUser(ride.pk, ride.driver)
+                sendEmail(ride)
                 ride.save()
-                utils.sendEmail(ride)
                 return HttpResponse("send email")
-        HttpResponse("data error")
-    return HttpResponse("method wrong")
+        return HttpResponse("modify Unknown error")
+    else:
+        return HttpResponse("method wrong")
 
 def SearchRideDriver(request):
     if request.method == 'GET':
         data = request.GET.dict()
         driver_obj = User.objects.get(pk=data['uid'])
-        driver_ride_list = driver_obj.ride_list.keys()
+        driver_ride_list = list(driver_obj.ride_list.keys())
         result = Ride.objects.filter(totalPassNum__lte=driver_obj.max_passenger
                             ).filter(status=0
                             ).filter(specialRequest = driver_obj.special_info
+                            ).filter(Q(carType = driver_obj.vehicle_type)|Q(carType = None)
                             ).order_by('arrivalTime')
-        result = Ride.objects.filter(carType = driver_obj.vehicle_type)
         for rid in driver_ride_list:
             result = result.exclude(pk=rid)
         return result
@@ -112,13 +129,22 @@ def SearchRideDriver(request):
 
 def SearchRideSharer(request):
     if request.method == 'GET':
-        data = request.GET.dict()
-        sharer_obj = User.objects.get(pk=data['uid'])
-        sharer_ride_list = sharer_obj.ride_list.keys()
-        result = Ride.objects.filter(dest = data['dest']
-                            ).filter(arrivalTime__lte=data['max_time']
-                            ).filter(arrivalTime__gte=data['min_time']
+        data = request.GET
+        print(1)
+        sharer_obj = User.objects.get(pk=data.get('uid'))
+        print(2)
+        sharer_ride_list = list(sharer_obj.ride_list.keys())
+        print(3)
+        max_time = datetime.datetime.strptime(data.get('max_time'), "%Y-%m-%d %H:%M:%S")
+        print(4)
+        min_time = datetime.datetime.strptime(data.get('min_time'), "%Y-%m-%d %H:%M:%S")
+        print(5)
+        result = Ride.objects.filter(dest = data.get('dest')
+                            ).filter(arrivalTime__lte=max_time
+                            ).filter(arrivalTime__gte=min_time
+                            ).filter(rideType=True
                             ).order_by('arrivalTime')
+        print(6)
         for rid in sharer_ride_list:
             result = result.exclude(pk=rid)
         return result

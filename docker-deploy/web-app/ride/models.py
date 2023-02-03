@@ -1,5 +1,5 @@
 from django.db import models
-from rideSharing.models import User
+from rideSharing.models import my_user as User
 
 class Ride(models.Model):
     rideType = models.BooleanField()
@@ -21,7 +21,7 @@ class Ride(models.Model):
         return "Ride ID: " + str(self.id) +" Ride Owner: " + str(self.owner)
     
     def addRidtoUser(rid, uid, role):
-        user_obj = User.objects.get(pk=uid)
+        user_obj = User.objects.get(id=uid)
         rid_dict = user_obj.ride_list
         if rid_dict is None:
             rid_dict = {}
@@ -39,6 +39,7 @@ class Ride(models.Model):
             del rid_dict[rid]
             user_obj.ride_list = rid_dict
             user_obj.save()
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             return True
         else:
             return False # not exist

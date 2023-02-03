@@ -4,8 +4,9 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='ride'),
-    path('getr/<int:rid>', views.getByRid, name='getByRid'),
+    path('<int:rid>', views.getByRid, name='getByRid'),
     path('getu/<int:uid>', views.getByUid, name='getByUid'),
+    path('getd/<int:uid>', views.getByDid, name='getByDid'),
     path('add', views.addRide, name='addRide'),
     path('modify',views.modifyRide,name='modifyRide'),
     path('searchd',views.SearchRideDriver,name='SearchRideDriver'),
