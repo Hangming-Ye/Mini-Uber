@@ -35,11 +35,10 @@ class Ride(models.Model):
     def rmRidfromUser(rid,uid):
         user_obj = User.objects.get(pk=uid)
         rid_dict = user_obj.ride_list
-        if rid in rid_dict:
-            del rid_dict[rid]
+        if str(rid) in rid_dict:
+            del rid_dict[str(rid)]
             user_obj.ride_list = rid_dict
             user_obj.save()
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             return True
         else:
             return False # not exist

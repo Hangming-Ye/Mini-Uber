@@ -7,7 +7,6 @@ def sendEmail(ride):
     for uid in user_list:
         user_obj = User.objects.get(pk=uid)
         msg = "Hi, "+ user_obj.username+"\n    your ride to the "+ride.dest+" at time "+str(ride.arrivalTime)+" is completed."
-        print(msg)
         send_mail(
             subject='Your order is complete',
             message=msg,
