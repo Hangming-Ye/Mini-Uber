@@ -1,5 +1,4 @@
 from django.urls import path
-
 from . import views
 
 urlpatterns = [
@@ -9,6 +8,6 @@ urlpatterns = [
     path('getd/<int:uid>', views.getByDid, name='getByDid'),
     path('add', views.addRide, name='addRide'),
     path('modify',views.modifyRide,name='modifyRide'),
-    path('searchd',views.SearchRideDriver,name='SearchRideDriver'),
+    path('searchd/<int:uid>',views.SearchRideDriver,name='SearchRideDriver'),
     path('searchs',views.SearchRideSharer,name='SearchRideSharer'),
 ]

@@ -111,42 +111,35 @@ def modifyRide(request):
     else:
         return HttpResponse("method wrong")
 
-def SearchRideDriver(request):
+def SearchRideDriver(request, uid):
     if request.method == 'GET':
-        data = request.GET.dict()
-        driver_obj = User.objects.get(pk=data['uid'])
+        driver_obj = User.objects.get(pk=uid)
         driver_ride_list = list(driver_obj.ride_list.keys())
         result = Ride.objects.filter(totalPassNum__lte=driver_obj.max_passenger
                             ).filter(status=0
-                            ).filter(specialRequest = driver_obj.special_info
-                            ).filter(Q(carType = driver_obj.vehicle_type)|Q(carType = None)
+                            ).filter(Q(specialRequest = driver_obj.special_info)|Q(specialRequest = None)|Q(specialRequest = "")
+                            ).filter(Q(carType = driver_obj.vehicle_type)|Q(carType = None)|Q(carType = "")
                             ).order_by('arrivalTime')
         for rid in driver_ride_list:
             result = result.exclude(pk=rid)
-        return result
+        return HttpResponse(result)
     else:
         return HttpResponse("method wrong")
 
 def SearchRideSharer(request):
     if request.method == 'GET':
         data = request.GET
-        print(1)
         sharer_obj = User.objects.get(pk=data.get('uid'))
-        print(2)
         sharer_ride_list = list(sharer_obj.ride_list.keys())
-        print(3)
         max_time = datetime.datetime.strptime(data.get('max_time'), "%Y-%m-%d %H:%M:%S")
-        print(4)
         min_time = datetime.datetime.strptime(data.get('min_time'), "%Y-%m-%d %H:%M:%S")
-        print(5)
         result = Ride.objects.filter(dest = data.get('dest')
                             ).filter(arrivalTime__lte=max_time
                             ).filter(arrivalTime__gte=min_time
                             ).filter(rideType=True
                             ).order_by('arrivalTime')
-        print(6)
         for rid in sharer_ride_list:
             result = result.exclude(pk=rid)
-        return result
+        return HttpResponse(result)
     else:
         return HttpResponse("method wrong")
