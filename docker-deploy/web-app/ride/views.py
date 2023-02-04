@@ -14,30 +14,19 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def index(request):
     if request.user.is_authenticated:
-        return render(request,'ride/homepage.html')
+        data = getByUid(request)
+        data["user"] = request.user
+        return render(request,'ride/homepage.html',data)
     else:
         return redirect('rideSharing/login/')
-    return render(request, 'ride/homepage.html', {})
 
 @login_required
-def getByRid(request, rid):
+def getByRid(request, rid, role):
     ride = get_object_or_404(Ride, pk=rid)
-    return HttpResponse(ride)
+    ride_dict = ride.to_dict()
+    ride_dict["role"] = role
+    return render(request,'ride/detail.html',{"ride":ride_dict})
 
-@login_required
-def getByUid(request, uid):
-    if request.method == 'GET':
-        user_obj = User.objects.get(pk=uid)
-        ride_list = list(user_obj.ride_list.keys())
-        result = dict()
-        count = 1
-        for rid in ride_list:
-            if user_obj.ride_list[rid] != "driver":
-                result[count] = [Ride.objects.get(pk=rid),user_obj.ride_list[rid]]
-                count += 1
-        return HttpResponse(result)
-    else:
-        return HttpResponse("method wrong")
 
 @login_required
 def getByDid(request):
@@ -83,7 +72,7 @@ def modifyRide(request):
     if request.method == 'PUT':
         data = MultiPartParser(request.META, request, request.upload_handlers).parse()[0].dict()
         ride = Ride.objects.get(pk = data['rid'])
-        if int(data['status']) == 0 and ride.status == 0:
+        if int(data['status']) == "Open" and ride.status == "Open":
             if 'share_num' in data:
                 share_dict = ride.shared
                 if ride.shared is None:
@@ -107,16 +96,16 @@ def modifyRide(request):
                 ride.carType = data['carType']
                 ride.save()
                 return HttpResponse("owner modify success")
-        elif int(data['status']) == 1 and ride.status == 0:
-            ride.status=int(data['status'])
+        elif int(data['status']) == "Confirmed" and ride.status == "Open":
+            ride.status=data['status']
             ride.driver=int(data['uid'])
             if ride.driver == int(data['uid']):
                 ride.save()
                 Ride.addRidtoUser(ride.pk, ride.driver,"driver")
                 return HttpResponse("Ride Confirmed")
-        elif int(data['status']) == 2 and ride.status == 1:
+        elif int(data['status']) == "Completed" and ride.status == "Confirmed":
             if ride.driver == int(data['uid']): 
-                ride.status=int(data['status'])
+                ride.status=data['status']
                 for uid in list(ride.shared.keys()):
                     Ride.rmRidfromUser(ride.pk, uid)
                 Ride.rmRidfromUser(ride.pk,ride.owner)
@@ -134,7 +123,7 @@ def SearchRideDriver(request):
         driver_obj = User.objects.get(pk=request.user.pk)
         driver_ride_list = list(driver_obj.ride_list.keys())
         result = Ride.objects.filter(totalPassNum__lte=driver_obj.max_passenger
-                            ).filter(status=0
+                            ).filter(status="Open"
                             ).filter(Q(specialRequest = driver_obj.special_info)|Q(specialRequest = None)|Q(specialRequest = "")
                             ).filter(Q(carType = driver_obj.vehicle_type)|Q(carType = None)|Q(carType = "")
                             ).order_by('arrivalTime')

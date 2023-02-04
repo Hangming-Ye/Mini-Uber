@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ride Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  </head>
+  <body>
+    <div id="container" style="width:100%; height: 100vw;">
+
+        <div id="header" style="background-color:#99CCFF;">
+          <h1 class="text-center">Home</h1>
+        </div>
+    
+        <div id="menu" style="background-color:#CCFF99;height:100vw;width:20%;float:left;">
+          <b>Menu</b>
+          <br>
+          <a href="/rideSharing/get_user_info/">View Your Personal Information</a>
+          <br>
+          {% if user.is_driver %}
+          <a href="/rideSharing/driver_page/">Go to Driver Page</a>
+          <br>
+          {% else %}
+          <a href="/rideSharing/modify_driver/">Register as a driver</a>
+          <br>
+          {% endif%}
+          <a href="/ride/add/">New Request</a>
+          <br>
+          <a href="/ride/searchs/">Find Share Ride</a>
+        </div>
+  
+        <div id="content" style="background-color:#ffffff;height:100vw;width:80%;float:right;">
+          <h1 class="text-center text-success">Ride Detail</h1>
+          <div id="Ride Info">
+              <h2 class="text-center">Owner Info</h2>
+              {% if ride %}
+              <ul>
+                  <li><b>Dest:</b> &nbsp; {{ride.dest}}</li>
+                  <li><b>Ride Type:</b> &nbsp; {{ride.rideType}}</li>
+                  <li><b>Total Passenger Number:</b> &nbsp; {{ride.totalPassNum}}</li>
+                  <li><b>Owner Passenger Number:</b> &nbsp; {{ride.ownerPassNum}}</li>
+                  <li><b>Arrival Time:</b> &nbsp; {{ride.arrivalTime}}</li>
+                  <li><b>Car Type:</b> &nbsp; {{ride.carType}}</li>
+                  <li><b>Special Request:</b> &nbsp; {{ride.specialRequest}}</li>
+              </ul>
+              {% if ride.shared %}
+              <h2 class="text-center">Sharer Info</h2>
+              <ul>
+                  <li><b>Sharer Number:</b> &nbsp; {{ride.shared.share_num}}</li>
+                  <li><b>Sharer Passenger Number:</b> &nbsp; {{ride.shared.share_pass_num}}</li>
+              </ul>
+              {% endif %}
+              {% if ride.driver %}
+              <h2 class="text-center">Driver Info</h2>
+              <ul>
+                  <li><b>Driver Name:</b> &nbsp; {{ride.driverName}}</li>
+                  <li><b>License Plate Number:</b> &nbsp; {{ride.carNum}}</li>
+                  <li><b>Car Maximum Capacity:</b> &nbsp; {{ride.maxCapacity}}</li>
+              </ul>
+              {% endif %}
+              {% else %}
+              <p>Something went wrong, ride is not aviliable</p>
+              {% endif %}
+          </div>
+          <div id = "Ride Management">
+              {% if ride %}
+                  {% if ride.role == "owner" %}
+                  <a href="/ride/modify">Modify Order</a>
+                  {% endif %}
+                  {% if ride.role == "sharer" %}
+                  <a href="/ride/modify">Modify Order</a>
+                  {% endif %}
+                  {% if ride.role == "driver" %}
+                      {% if ride.status == "Open" %}
+                      <a href="/ride/modify">Confirm</a>
+                      {% endif %}
+                      {% if ride.status == "Confirmed" %}
+                      <a href="/ride/modify">Complete</a>
+                      {% endif %}
+                  {% endif %}
+              {% endif %}
+          </div>
+        </div>
+      </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+  </body>
+</html>

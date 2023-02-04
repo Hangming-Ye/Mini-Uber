@@ -15,5 +15,19 @@ def sendEmail(ride):
             fail_silently=False
         )
 
+def getByUid(request):
+    user_obj = User.objects.get(pk=request.user.pk)
+    if user_obj.ride_list == None or user_obj.ride_list == {}:
+        return None
+    ride_list = list(user_obj.ride_list.keys())
+    result = list()
+    for rid in ride_list:
+        if user_obj.ride_list[rid] != "driver":
+            data = Ride.objects.get(pk=rid).to_dict()
+            data['role'] = user_obj.ride_list[rid]
+            result.append(data)
+    print({"rideList":result})
+    return {"rideList":result}
+
 def checkValidUser(uid):
     return
