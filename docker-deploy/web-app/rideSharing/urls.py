@@ -9,6 +9,5 @@ urlpatterns = [
     path('login/', views.login),
     path('modify_driver/', views.modify_driver),
     #path('logout/', views.logout),
-    path('driver_page/', views.driver_de_register),
-    
+    path('driver_de_register/', views.driver_de_register),
 ]

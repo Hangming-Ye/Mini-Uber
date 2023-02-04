@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 # from django.http import HttpResponse
 from django.contrib import auth
 from .models import my_user as User
+from .userForms import *
 # Create your views here.
 
 # user register:
@@ -118,27 +119,43 @@ def driver_de_register(request):
     else:
         return render(request, 'rideSharing/driver_page.html')
 
-# User should be able to edit their driver status as well as personal & vehicle info:
-# It is used for Driver Registration and edit driver info
-def modify_driver(request):
-    # Check whether the user is logged in
-    if request.user.is_authenticated == False:
-        return redirect('/rideSharing/login/')
-    user = User.objects.get(pk = request.user.pk)
-    if request.method == 'POST':
-        # username = request.POST.get('username')
-        # user.username = username
-        vehicle_type = request.POST.get('vehicle_type')
-        license_plate_nums = request.POST.get('license_plate_nums')
-        special_info = request.POST.get('special_info')
-        max_passenger = request.POST.get('max_passenger')
-        user.vehicle_type = vehicle_type
-        user.special_info = special_info
-        user.license_plate_nums = license_plate_nums
-        user.max_passenger = max_passenger
-        # Whether it is editing driver information or registering as a driver, is_driver is always True
-        user.is_driver = True
-        user.save()        
-        return redirect('/rideSharing/get_user_info/')
-    return render(request, 'rideSharing/modify_driver.html')
+# # User should be able to edit their driver status as well as personal & vehicle info:
+# # It is used for Driver Registration and edit driver info
+# def modify_driver(request):
+#     # Check whether the user is logged in
+#     if request.user.is_authenticated == False:
+#         return redirect('/rideSharing/login/')
+#     user = User.objects.get(pk = request.user.pk)
+#     if request.method == 'POST':
+#         # username = request.POST.get('username')
+#         # user.username = username
+#         vehicle_type = request.POST.get('vehicle_type')
+#         license_plate_nums = request.POST.get('license_plate_nums')
+#         special_info = request.POST.get('special_info')
+#         max_passenger = request.POST.get('max_passenger')
+#         user.vehicle_type = vehicle_type
+#         user.special_info = special_info
+#         user.license_plate_nums = license_plate_nums
+#         user.max_passenger = max_passenger
+#         # Whether it is editing driver information or registering as a driver, is_driver is always True
+#         user.is_driver = True
+#         user.save()        
+#         return redirect('/rideSharing/get_user_info/')
+#     return render(request, 'rideSharing/modify_driver.html')
 
+def modify_driver(request):
+    uid = request.user.id
+    if request.method == 'POST':
+        form = addDriverForm(request.POST)
+        if form.is_valid():
+            user_obj = User.objects.get(pk=uid)
+            user_obj.vehicle_type = form.cleaned_data['vehicle_type']
+            user_obj.license_plate_nums = form.cleaned_data['license_plate_nums']
+            user_obj.special_info  = form.cleaned_data['special_info']
+            user_obj.max_passenger = form.cleaned_data['max_passenger']
+            user_obj.is_driver = True
+            user_obj.save()
+        return redirect('/rideSharing/get_user_info/')
+    else:
+        form = addDriverForm()
+        return render(request, 'rideSharing/driver_form.html', {'form': form})

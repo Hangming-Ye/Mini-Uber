@@ -9,6 +9,7 @@ from .rideUtils import *
 from django.db.models import Q
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from .rideForm import *
 # 未实现：异常抛出处理, check valid
 
 @login_required
@@ -16,9 +17,19 @@ def index(request):
     if request.user.is_authenticated:
         data = getByUid(request)
         user = User.objects.get(pk=request.user.pk)
+        print(user.username)
         data["user"] = user
-        print(user.is_driver)
         return render(request,'ride/homepage.html',data)
+    else:
+        return redirect('rideSharing/login/')
+
+@login_required
+def Dindex(request):
+    if request.user.is_authenticated:
+        data = getByUid(request)
+        user = User.objects.get(pk=request.user.pk)
+        data["user"] = user
+        return render(request,'rideSharing/driver_page.html',data)
     else:
         return redirect('rideSharing/login/')
 
@@ -62,18 +73,35 @@ def getByDid(request):
 
 @login_required
 def addRide(request):
-    if request.method == "POST":
-        data = request.POST.dict()
-        dt = datetime.datetime.strptime(data['arrivalTime'], "%Y-%m-%d %H:%M:%S")
-        data['arrivalTime'] = dt
-        data['totalPassNum'] = data['ownerPassNum']
-        ride_obj = Ride.objects.create(**data)
-        if Ride.addRidtoUser(ride_obj.pk, data['owner'],"owner"):
+    uid = request.user.id
+    if request.method == 'POST':
+        form = AddRideForm(request.POST)
+        if form.is_valid():
+            form.cleaned_data['owner']=uid
+            form.cleaned_data['totalPassNum'] = form.cleaned_data['ownerPassNum']
+            ride_obj = Ride.objects.create(**form.cleaned_data)
+            Ride.addRidtoUser(ride_obj.pk, uid,"owner")
             ride_obj.save()
-            return HttpResponse(ride_obj.pk)
-        else:
-            return HttpResponse("User already exist")
-    return HttpResponse("method wrong")
+        return redirect('/ride/homepage')
+    else:
+        form = AddRideForm()
+        return render(request, 'ride/newRequest.html', {'form': form})
+
+@login_required
+def addShare(request):
+    uid = request.user.id
+    if request.method == 'POST':
+        form = AddRideForm(request.POST)
+        if form.is_valid():
+            form.cleaned_data['owner']=uid
+            form.cleaned_data['totalPassNum'] = form.cleaned_data['ownerPassNum']
+            ride_obj = Ride.objects.create(**form.cleaned_data)
+            Ride.addRidtoUser(ride_obj.pk, uid,"owner")
+            ride_obj.save()
+        return redirect('/ride/homepage')
+    else:
+        form = AddRideForm()
+        return render(request, 'ride/newRequest.html', {'form': form})
 
 @login_required
 def modifyRide(request):
