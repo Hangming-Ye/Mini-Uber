@@ -8,14 +8,16 @@
   </head>
   <body>
     <h1 class="text-center text-success">Enter Your Driver info</h1>
+    <a href="/ride/homepage/">Go Back to Home Page</a>
+    <br>
+    Or
+    <br>
+    <a href="/rideSharing/driver_page/">Go Back to Driver Page</a>
+    <br>
+    <br>
     <div class="container-fluid">
       <form method="POST" action="" class="row g-3">
         {% csrf_token %}
-        <a href="/rideSharing/homepage/">Go Back to Home Page</a>
-        <div class="col-md-6">
-          <label for="username" class="form-label">User Name</label>
-          <input name="username" type="text" class="form-control" id="username">
-        </div>
         <div class="col-md-4">
           <label for="vehicle_type" class="form-label">Vehicle Type</label>
           <select id="vehicle_type" class="form-select">

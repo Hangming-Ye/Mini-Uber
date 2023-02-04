@@ -40,18 +40,26 @@ def getByUid(request, uid):
         return HttpResponse("method wrong")
 
 @login_required
-def getByDid(request, uid):
+def getByDid(request):
     if request.method == 'GET':
-        user_obj = User.objects.get(pk=uid)
-        ride_list = list(user_obj.ride_list.keys())
-        result = dict()
-        count = 1
-        for rid in ride_list:
-            if user_obj.ride_list[rid] == "driver":
-                result[count] = [Ride.objects.get(pk=rid),user_obj.ride_list[rid]]
-                count += 1
-        print(result)
-        return HttpResponse(result)
+        user_obj = User.objects.get(pk=request.user.pk)
+        if user_obj.ride_list:
+            ride_list = list(user_obj.ride_list.keys())
+            result = dict()
+            count = 1
+            for rid in ride_list:
+                if user_obj.ride_list[rid] == "driver":
+                    result[count] = [Ride.objects.get(pk=rid),user_obj.ride_list[rid]]
+                    count += 1
+            # ?????
+            print(result)
+            if result is None:
+                # Consider that the driver does not have any confirmed rides.
+                return HttpResponse("Sorry, you have no confirmed rides yet.")
+            else: return HttpResponse(result)
+        else: 
+            # Consider that the driver does not have any kind of rides
+            return HttpResponse("Sorry, you have no confirmed rides yet.")
     else:
         return HttpResponse("method wrong")
 
@@ -121,9 +129,9 @@ def modifyRide(request):
         return HttpResponse("method wrong")
 
 @login_required
-def SearchRideDriver(request, uid):
+def SearchRideDriver(request):
     if request.method == 'GET':
-        driver_obj = User.objects.get(pk=uid)
+        driver_obj = User.objects.get(pk=request.user.pk)
         driver_ride_list = list(driver_obj.ride_list.keys())
         result = Ride.objects.filter(totalPassNum__lte=driver_obj.max_passenger
                             ).filter(status=0

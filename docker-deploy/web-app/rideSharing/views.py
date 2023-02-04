@@ -85,31 +85,38 @@ def get_user_info(request):
 
 # A registered driver cancels the register and become a pure user (de-reg):
 def driver_de_register(request):
-    user = User.objects.get(pk = request.user.pk)
-    uid = request.user.pk
+    if request.method == 'POST':
+        user = User.objects.get(pk = request.user.pk)
+        uid = request.user.pk
     # traverse all rides of this user, and get the incomplete rides in which the role of this user is driver
     # ??????????????? incomplete???????
     # ?????????????value是这种形式嘛？这样写可以嘛？？？？？？
     # rid_list = list(filter(lambda x: user.ride_list[x] == 'driver', user.ride_list))
-    rid_list = []
-    for rid0 in user.ride_list.keys():
-        if user.ride_list[rid0] == 'driver':
-            rid_list.append(rid0)
-    # Change all these rides status into open and driver field in ride object into None
-    # remove these rides from this user's ride dictionary
-    for rid1 in rid_list:
-        ride = Ride.objects.get(pk = rid1)
-        ride.status = 0
-        ride.driver = None
-        ride.save()
-        Ride.rmRidfromUser(rid1,uid)
-    # Change all driver info into None in this user object and is_driver into False
-    user.vehicle_type = None
-    user.special_info = None
-    user.license_plate_nums = None
-    user.max_passenger = None
-    user.is_driver = False
-    return redirect('/rideSharing/get_user_info/')
+        rid_list = []
+        # if the user does not have that kind of rides
+        # ?????????????
+        if user.ride_list:
+            for rid0 in user.ride_list.keys():
+                if user.ride_list[rid0] == 'driver':
+                    rid_list.append(rid0)
+        # Change all these rides status into open and driver field in ride object into None
+        # remove these rides from this user's ride dictionary
+        for rid1 in rid_list:
+            ride = Ride.objects.get(pk = rid1)
+            ride.status = 0
+            ride.driver = None
+            ride.save()
+            Ride.rmRidfromUser(rid1,uid)
+        # Change all driver info into None in this user object and is_driver into False
+        user.vehicle_type = None
+        user.special_info = None
+        user.license_plate_nums = None
+        user.max_passenger = None
+        user.is_driver = False
+        user.save()
+        return redirect('/rideSharing/get_user_info/')
+    else:
+        return render(request, 'rideSharing/driver_page.html')
 
 # User should be able to edit their driver status as well as personal & vehicle info:
 # It is used for Driver Registration and edit driver info
@@ -119,8 +126,8 @@ def modify_driver(request):
         return redirect('/rideSharing/login/')
     user = User.objects.get(pk = request.user.pk)
     if request.method == 'POST':
-        username = request.POST.get('username')
-        user.username = username
+        # username = request.POST.get('username')
+        # user.username = username
         vehicle_type = request.POST.get('vehicle_type')
         license_plate_nums = request.POST.get('license_plate_nums')
         special_info = request.POST.get('special_info')

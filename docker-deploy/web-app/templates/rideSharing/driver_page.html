@@ -8,36 +8,30 @@
   </head>
   <body>
     <h1 class="text-center text-success">Driver Page</h1>
-    <a href="/rideSharing/homepage/">Go Back to Home Page</a>
-    <br>
-    <br>
-        <div class="container">
-          <div class="row">
-            <a href="/rideSharing/get_user_info/">View Your Personal & Vehicle Information</a>
-          </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <a href="/rideSharing/modify_driver/">Edit Your Personal & Vehicle Information</a>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <a href="/ride/searchd/">Search for Open Ride Requests (Get a ride sharing order)</a>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row">
-                <a href="/ride/getd/">View Your Confirmed Rides</a>
-            </div>
-        </div>
+    <div class="container-fluid">
+      <form method="POST" action="" class="row g-3">
+        {% csrf_token %}
+        <a href="/ride/homepage/">Go Back to Home Page</a>
         <br>
-        <form action="" class="row g-3">
-            <div class="col-12">
-                {{Do not want to be a driver anymore? you can:}}&nbsp;
-                <button type="submit" class="btn btn-primary">Unregister Driver</button>
-            </div>
-        </form>
+        <br>
+        <br>
+        <div class="text-center">
+          <div id="header" style="background-color:#99ffa085;">
+            <h1 class="text-center">Menu</h1>
+            <a href="/rideSharing/get_user_info/">View Your Personal & Vehicle Information</a><br>
+            <a href="/rideSharing/modify_driver/">Edit Your Personal & Vehicle Information</a><br>
+            <a href="/ride/searchd/">Search for Open Ride Requests (Get a ride sharing order)</a><br>
+            <a href="/ride/getd/">View Your Confirmed Rides</a>
+          </div>
+          <br>
+          <br>
+        </div>
+        <div class="col-12">
+          Do not want to be a driver anymore? you can:&nbsp;
+          <button type="submit" class="btn btn-primary">Unregister Driver</button>
+        </div>
+      </form>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
   </body>
 </html>
