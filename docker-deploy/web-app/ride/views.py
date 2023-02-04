@@ -15,7 +15,9 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     if request.user.is_authenticated:
         data = getByUid(request)
-        data["user"] = request.user
+        user = User.objects.get(pk=request.user.pk)
+        data["user"] = user
+        print(user.is_driver)
         return render(request,'ride/homepage.html',data)
     else:
         return redirect('rideSharing/login/')
@@ -23,9 +25,15 @@ def index(request):
 @login_required
 def getByRid(request, rid, role):
     ride = get_object_or_404(Ride, pk=rid)
+
     ride_dict = ride.to_dict()
     ride_dict["role"] = role
-    return render(request,'ride/detail.html',{"ride":ride_dict})
+    data = {"ride":ride_dict}
+    user = User.objects.get(pk=request.user.pk)
+    data["user"] = user
+    print(user.is_driver)
+
+    return render(request,'ride/detail.html',data)
 
 
 @login_required

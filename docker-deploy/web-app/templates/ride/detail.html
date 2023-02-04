@@ -10,15 +10,17 @@
     <div id="container" style="width:100%; height: 100vw;">
 
         <div id="header" style="background-color:#99CCFF;">
-          <h1 class="text-center">Home</h1>
+          <h1 class="text-center">Ride Detail</h1>
         </div>
     
         <div id="menu" style="background-color:#CCFF99;height:100vw;width:20%;float:left;">
           <b>Menu</b>
           <br>
+          <a href="/ride/homepage/">Back to Home</a>
+          <br>
           <a href="/rideSharing/get_user_info/">View Your Personal Information</a>
           <br>
-          {% if user.is_driver %}
+          {% if user.is_driver is True %}
           <a href="/rideSharing/driver_page/">Go to Driver Page</a>
           <br>
           {% else %}
@@ -31,7 +33,6 @@
         </div>
   
         <div id="content" style="background-color:#ffffff;height:100vw;width:80%;float:right;">
-          <h1 class="text-center text-success">Ride Detail</h1>
           <div id="Ride Info">
               <h2 class="text-center">Owner Info</h2>
               {% if ride %}
