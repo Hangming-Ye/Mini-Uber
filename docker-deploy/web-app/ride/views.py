@@ -7,16 +7,24 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http.multipartparser import MultiPartParser
 from .rideUtils import *
 from django.db.models import Q
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 # 未实现：异常抛出处理, check valid
 
-# Create your views here.
+@login_required
 def index(request):
-    return HttpResponse("Hello, world. You're at the ride index.")
+    if request.user.is_authenticated:
+        return render(request,'ride/homepage.html')
+    else:
+        return redirect('rideSharing/login/')
+    return render(request, 'ride/homepage.html', {})
 
+@login_required
 def getByRid(request, rid):
     ride = get_object_or_404(Ride, pk=rid)
     return HttpResponse(ride)
 
+@login_required
 def getByUid(request, uid):
     if request.method == 'GET':
         user_obj = User.objects.get(pk=uid)
@@ -31,6 +39,7 @@ def getByUid(request, uid):
     else:
         return HttpResponse("method wrong")
 
+@login_required
 def getByDid(request, uid):
     if request.method == 'GET':
         user_obj = User.objects.get(pk=uid)
@@ -46,7 +55,7 @@ def getByDid(request, uid):
     else:
         return HttpResponse("method wrong")
 
-@csrf_exempt
+@login_required
 def addRide(request):
     if request.method == "POST":
         data = request.POST.dict()
@@ -61,7 +70,7 @@ def addRide(request):
             return HttpResponse("User already exist")
     return HttpResponse("method wrong")
 
-@csrf_exempt
+@login_required
 def modifyRide(request):
     if request.method == 'PUT':
         data = MultiPartParser(request.META, request, request.upload_handlers).parse()[0].dict()
@@ -111,6 +120,7 @@ def modifyRide(request):
     else:
         return HttpResponse("method wrong")
 
+@login_required
 def SearchRideDriver(request, uid):
     if request.method == 'GET':
         driver_obj = User.objects.get(pk=uid)
@@ -126,6 +136,7 @@ def SearchRideDriver(request, uid):
     else:
         return HttpResponse("method wrong")
 
+@login_required
 def SearchRideSharer(request):
     if request.method == 'GET':
         data = request.GET
