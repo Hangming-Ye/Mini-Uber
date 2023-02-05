@@ -157,6 +157,8 @@ def modifyRide(request):
 def SearchRideDriver(request):
     if request.method == 'GET':
         driver_obj = User.objects.get(pk=request.user.pk)
+        if driver_obj.ride_list is None:
+            driver_obj.ride_list = dict()
         driver_ride_list = list(driver_obj.ride_list.keys())
         result = Ride.objects.filter(totalPassNum__lte=driver_obj.max_passenger
                             ).filter(status="Open"
@@ -165,6 +167,7 @@ def SearchRideDriver(request):
                             ).order_by('arrivalTime')
         for rid in driver_ride_list:
             result = result.exclude(pk=rid)
+        print(result)
         return HttpResponse(result)
     else:
         return HttpResponse("method wrong")
