@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     path('homepage/', views.index, name='home'),
-    path('driver_page/', views.Dindex,name="Dindex"),
+    path('driver_page/', views.SearchRideDriver,name="SearchRideDriver"),
     path('<int:rid>/<str:role>', views.getByRid, name='getByRid'),
     path('getu/<int:uid>/', views.getByUid, name='getByUid'),
     path('getd/', views.getByDid, name='getByDid'),

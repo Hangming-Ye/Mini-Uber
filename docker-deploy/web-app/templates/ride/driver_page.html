@@ -7,14 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
   </head>
   <body>
-<!--
-    {% if user.is_driver %}
-    <a href="/rideSharing/driver_page/">Go to Driver Page</a>
-    {% else %}
-    <a href="/rideSharing/modify_driver/">Register as a driver</a>
-    {% endif %}
--->
-
     <h1>Welcome, driver {{ user.username }}</h1>
     <div id="container" style="width:100%; height: 100vw;">
 
@@ -27,11 +19,9 @@
         <br>
         <a href="/ride/homepage/">Go Back to Home Page</a>
         <br>
-        <a href="/rideSharing/get_user_info/">View Your Personal  & Vehicle Information</a>
+        <a href="/rideSharing/get_user_info/">View Your Personal  & Vehicle Info</a>
         <br>
-        <a href="/rideSharing/driver_form/">Edit Your Personal & Vehicle Information</a>
-        <br>
-        <a href="/ride/searchd/">Search for Open Ride Requests (Get a ride sharing order)</a>
+        <a href="/rideSharing/driver_form/">Edit Your Personal & Vehicle Info</a>
         <br>
         <a href="/rideSharing/driver_de_register/">Unregister Driver</a>
         <br>
@@ -39,20 +29,23 @@
       </div>
 
       <div id="content" style="background-color:#ffffff;height:100vw;width:80%;float:right;">
-        <h1 class="text-center">Confirmed Ride</h1>
+        <h2 class="text-left"> &nbsp; Open Rides For You to Confirm</h2>
+        &nbsp;&nbsp; &nbsp; <a href="/ride/searchd/">Search for Open Ride Requests</a>
+        <br>
+        <br>
         {% if rideList %}
           <ul>
           {% for ride in rideList %}
           <li>
             <b>Dest:</b> {{ride.dest}} &nbsp; <b>Arrival Time:</b> {{ride.arrivalTime}} &nbsp; 
-            <b>Your Role: </b>{{ride.role}}&nbsp; <b>Order Status:</b> {{ride.status}}
+            <b>Order Status:</b> {{ride.status}}
             <br>
-            <a href="/ride/{{ ride.rid }}/{{ride.role}}">Detail</a>
+            <a href="/ride/{{ ride.rid }}/driver">Detail</a>
           </li>
           {% endfor %}
           </ul>
         {% else %}
-          <p>No ride available.</p>
+          <p>No ride available</p>
         {% endif %}
       </div>
     </div>

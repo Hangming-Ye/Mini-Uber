@@ -22,10 +22,9 @@ def getByUid(request):
     ride_list = list(user_obj.ride_list.keys())
     result = list()
     for rid in ride_list:
-        if user_obj.ride_list[rid] != "driver":
-            data = Ride.objects.get(pk=rid).to_dict()
-            data['role'] = user_obj.ride_list[rid]
-            result.append(data)
+        data = Ride.objects.get(pk=rid).to_dict()
+        data['role'] = user_obj.ride_list[rid]
+        result.append(data)
     print({"rideList":result})
     return {"rideList":result}
 

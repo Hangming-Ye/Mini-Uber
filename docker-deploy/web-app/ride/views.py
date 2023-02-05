@@ -23,15 +23,15 @@ def index(request):
     else:
         return redirect('rideSharing/login/')
 
-@login_required
-def Dindex(request):
-    if request.user.is_authenticated:
-        data = getByUid(request)
-        user = User.objects.get(pk=request.user.pk)
-        data["user"] = user
-        return render(request,'ride/driver_page.html',data)
-    else:
-        return redirect('rideSharing/login/')
+# @login_required
+# def Dindex(request):
+#     if request.user.is_authenticated:
+#         data = getByDid(request)
+#         user = User.objects.get(pk=request.user.pk)
+#         data["user"] = user
+#         return render(request,'ride/driver_page.html',data)
+#     else:
+#         return redirect('rideSharing/login/')
 
 @login_required
 def getByRid(request, rid, role):
@@ -47,29 +47,28 @@ def getByRid(request, rid, role):
     return render(request,'ride/detail.html',data)
 
 
-@login_required
-def getByDid(request):
-    if request.method == 'GET':
-        user_obj = User.objects.get(pk=request.user.pk)
-        if user_obj.ride_list:
-            ride_list = list(user_obj.ride_list.keys())
-            result = dict()
-            count = 1
-            for rid in ride_list:
-                if user_obj.ride_list[rid] == "driver":
-                    result[count] = [Ride.objects.get(pk=rid),user_obj.ride_list[rid]]
-                    count += 1
-            # ?????
-            print(result)
-            if result is None:
-                # Consider that the driver does not have any confirmed rides.
-                return HttpResponse("Sorry, you have no confirmed rides yet.")
-            else: return HttpResponse(result)
-        else: 
-            # Consider that the driver does not have any kind of rides
-            return HttpResponse("Sorry, you have no confirmed rides yet.")
-    else:
-        return HttpResponse("method wrong")
+# def getByDid(request):
+#     if request.method == 'GET':
+#         user_obj = User.objects.get(pk=request.user.pk)
+#         if user_obj.ride_list:
+#             ride_list = list(user_obj.ride_list.keys())
+#             result = dict()
+#             count = 1
+#             for rid in ride_list:
+#                 if user_obj.ride_list[rid] == "driver":
+#                     result[count] = [Ride.objects.get(pk=rid),user_obj.ride_list[rid]]
+#                     count += 1
+#             # ?????
+#             print(result)
+#             if result is None:
+#                 # Consider that the driver does not have any confirmed rides.
+#                 return HttpResponse("Sorry, you have no confirmed rides yet.")
+#             else: return HttpResponse(result)
+#         else: 
+#             # Consider that the driver does not have any kind of rides
+#             return HttpResponse("Sorry, you have no confirmed rides yet.")
+#     else:
+#         return HttpResponse("method wrong")
 
 @login_required
 def addRide(request):
@@ -167,6 +166,7 @@ def SearchRideDriver(request):
             result = result.exclude(pk=rid)
         result_list = list()
         for ride in result:
+            ride = ride.to_dict()
             result_list.append(ride)
         return render(request,'ride/driver_page.html',{'rideList':result_list})
     else:
