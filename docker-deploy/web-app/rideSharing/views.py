@@ -117,7 +117,7 @@ def driver_de_register(request):
         user.save()
         return redirect('/rideSharing/get_user_info/')
     else:
-        return render(request, 'rideSharing/driver_page.html')
+        return render(request, 'ride/driver_page.html')
 
 # # User should be able to edit their driver status as well as personal & vehicle info:
 # # It is used for Driver Registration and edit driver info
@@ -151,8 +151,8 @@ def modify_driver(request):
             user_obj = User.objects.get(pk=uid)
             user_obj.vehicle_type = form.cleaned_data['vehicle_type']
             user_obj.license_plate_nums = form.cleaned_data['license_plate_nums']
-            user_obj.special_info  = form.cleaned_data['special_info']
-            user_obj.max_passenger = form.cleaned_data['max_passenger']
+            user_obj.special_info  = form.cleaned_data['Specia_Vehicle_Info']
+            user_obj.max_passenger = form.cleaned_data['Maximum_Num_Passengers']
             user_obj.is_driver = True
             user_obj.save()
         return redirect('/rideSharing/get_user_info/')

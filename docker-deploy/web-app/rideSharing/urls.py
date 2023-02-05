@@ -7,7 +7,7 @@ urlpatterns = [
     # path('homepage/', views.homepage),
     path('get_user_info/', views.get_user_info),
     path('login/', views.login),
-    path('modify_driver/', views.modify_driver),
-    #path('logout/', views.logout),
+    path('driver_form/', views.modify_driver),
+    path('logout/', views.logout),
     path('driver_de_register/', views.driver_de_register),
 ]

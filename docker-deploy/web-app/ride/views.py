@@ -29,7 +29,7 @@ def Dindex(request):
         data = getByUid(request)
         user = User.objects.get(pk=request.user.pk)
         data["user"] = user
-        return render(request,'rideSharing/driver_page.html',data)
+        return render(request,'ride/driver_page.html',data)
     else:
         return redirect('rideSharing/login/')
 
@@ -82,7 +82,7 @@ def addRide(request):
             ride_obj = Ride.objects.create(**form.cleaned_data)
             Ride.addRidtoUser(ride_obj.pk, uid,"owner")
             ride_obj.save()
-        return redirect('/ride/homepage')
+        return redirect('/ride/homepage/')
     else:
         form = AddRideForm()
         return render(request, 'ride/newRequest.html', {'form': form})

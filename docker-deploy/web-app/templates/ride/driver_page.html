@@ -15,32 +15,31 @@
     {% endif %}
 -->
 
-    <h1>Welcome, {{ user.username }}</h1>
+    <h1>Welcome, driver {{ user.username }}</h1>
     <div id="container" style="width:100%; height: 100vw;">
 
       <div id="header" style="background-color:#99CCFF;">
-        <h1 class="text-center">Home</h1>
+        <h1 class="text-center">Driver Page</h1>
       </div>
       
       <div id="menu" style="background-color:#CCFF99;height:100vw;width:20%;float:left;">
         <b>Menu</b>
         <br>
-        <a href="/rideSharing/get_user_info/">View Your Personal Information</a>
+        <a href="/ride/homepage/">Go Back to Home Page</a>
         <br>
-        {% if user.is_driver %}
-        <a href="/ride/driver_page/">Go to Driver Page</a>
+        <a href="/rideSharing/get_user_info/">View Your Personal  & Vehicle Information</a>
         <br>
-        {% else %}
-        <a href="/rideSharing/driver_form/">Register as a driver</a>
+        <a href="/rideSharing/driver_form/">Edit Your Personal & Vehicle Information</a>
         <br>
-        {% endif %}
-        <a href="/ride/add/">New Request</a>
+        <a href="/ride/searchd/">Search for Open Ride Requests (Get a ride sharing order)</a>
         <br>
-        <a href="/ride/searchs/">Find Share Ride</a>
+        <a href="/rideSharing/driver_de_register/">Unregister Driver</a>
+        <br>
+        <a href="/rideSharing/logout/">Log Out</a>
       </div>
 
       <div id="content" style="background-color:#ffffff;height:100vw;width:80%;float:right;">
-        <h1 class="text-center">Ride</h1>
+        <h1 class="text-center">Confirmed Ride</h1>
         {% if rideList %}
           <ul>
           {% for ride in rideList %}

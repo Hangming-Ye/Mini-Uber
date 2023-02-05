@@ -18,5 +18,5 @@ class addDriverForm(forms.Form):
     
     vehicle_type = forms.ChoiceField(choices=CAR_TYPE_CHOICES, required=True)
     license_plate_nums = forms.CharField(max_length=8,required=True)
-    special_info = forms.CharField(required=False)
-    max_passenger = forms.IntegerField(required=True)
+    Specia_Vehicle_Info = forms.CharField(required=False)
+    Maximum_Num_Passengers = forms.IntegerField(required=True)    
