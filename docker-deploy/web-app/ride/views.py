@@ -10,8 +10,8 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .rideForm import *
-# 未实现：异常抛出处理, check valid
 
+# 未实现：异常抛出处理, check valid
 @login_required
 def index(request):
     if request.user.is_authenticated:
@@ -168,8 +168,7 @@ def SearchRideDriver(request):
         result_list = list()
         for ride in result:
             result_list.append(ride)
-        data = dict()
-        return render(request,'ride/homepage.html',{'rideList':result_list})
+        return render(request,'ride/driver_page.html',{'rideList':result_list})
     else:
         return HttpResponse("method wrong")
 
