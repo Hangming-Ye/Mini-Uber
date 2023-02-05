@@ -152,7 +152,7 @@ def modify_driver(request):
             user_obj = User.objects.get(pk=uid)
             user_obj.vehicle_type = form.cleaned_data['vehicle_type']
             user_obj.license_plate_nums = form.cleaned_data['license_plate_nums']
-            user_obj.special_info  = form.cleaned_data['Specia_Vehicle_Info']
+            user_obj.special_info  = form.cleaned_data['Special_Vehicle_Info']
             user_obj.max_passenger = form.cleaned_data['Maximum_Num_Passengers']
             user_obj.is_driver = True
             user_obj.save()
