@@ -165,7 +165,11 @@ def SearchRideDriver(request):
                             ).order_by('arrivalTime')
         for rid in driver_ride_list:
             result = result.exclude(pk=rid)
-        return HttpResponse(result)
+        result_list = list()
+        for ride in result:
+            result_list.append(ride)
+        data = dict()
+        return render(request,'ride/homepage.html',{'rideList':result_list})
     else:
         return HttpResponse("method wrong")
 
