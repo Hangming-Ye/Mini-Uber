@@ -25,7 +25,11 @@ class ModifyShareForm(Form):
     Sharer_Passenger_Number = forms.IntegerField(min_value=1)
 
 class SearchShareForm(Form):
-    Sharer_Passenger_Number = forms.IntegerField(min_value=1)
+    Destination = forms.CharField(required=True)
+    Maximum_Arrival_Time = forms.DateTimeField(required=True)
+    Minimum_Arrival_Time = forms.DateTimeField(required=True)
+    
+
 
 
 

@@ -115,7 +115,6 @@ def driver_de_register(request):
         user.max_passenger = None
         user.is_driver = False
         user.save()
-        print(1)
         return redirect('/rideSharing/get_user_info/')
     else:
         return render(request, 'ride/driver_page.html')

@@ -30,6 +30,8 @@
           <a href="/ride/add/">New Request</a>
           <br>
           <a href="/ride/searchs/">Find Share Ride</a>
+          <br>
+          <a href="/rideSharing/logout/">Log Out</a>
         </div>
   
         <div id="content" style="background-color:#ffffff;height:100vw;width:80%;float:right;">
@@ -67,17 +69,17 @@
           <div id = "Ride Management">
               {% if ride %}
                   {% if ride.role == "owner" %}
-                  <a href="/ride/modify">Modify Order</a>
+                  <a href="/ride/modify/{{ ride.rid }}">Modify Ride Info</a>
                   {% endif %}
                   {% if ride.role == "sharer" %}
-                  <a href="/ride/modify">Modify Order</a>
+                  <a href="/ride/share/{{ ride.rid }}">Modify/Join Sharing Info</a>
                   {% endif %}
                   {% if ride.role == "driver" %}
                       {% if ride.status == "Open" %}
-                      <a href="/ride/modify">Confirm</a>
+                      <a href="/ride/confirm/{{ ride.rid }}">Confirm</a>
                       {% endif %}
                       {% if ride.status == "Confirmed" %}
-                      <a href="/ride/modify">Complete</a>
+                      <a href="/ride/complete/{{ ride.rid }}">Complete</a>
                       {% endif %}
                   {% endif %}
               {% endif %}

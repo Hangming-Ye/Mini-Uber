@@ -7,17 +7,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
   </head>
   <body>
-    <h1>Welcome, {{ user.username }}</h1>
+    <h1>Search Open Ride</h1>
     <div id="container" style="width:100%; height: 100vw;">
-
       <div id="header" style="background-color:#99CCFF;">
         <h1 class="text-center">Home</h1>
       </div>
-      
       <div id="menu" style="background-color:#CCFF99;height:100vw;width:20%;float:left;">
         <b>Menu</b>
         <br>
-        <a href="/rideSharing/get_user_info/">View Your Personal Information</a>
+        <a href="/rideSharing/get_user_info/">View Your Personal Info</a>
         <br>
         {% if user.is_driver %}
         <a href="/ride/driver_page/">Go to Driver Page</a>
@@ -32,9 +30,8 @@
         <br>
         <a href="/rideSharing/logout/">Log Out</a>
       </div>
-
       <div id="content" style="background-color:#ffffff;height:100vw;width:80%;float:right;">
-        <h1 class="text-center">Ride</h1>
+        <h1 class="text-center">Aviliable Open Ride under Your Condition</h1>
         {% if rideList %}
           <ul>
           {% for ride in rideList %}
@@ -42,7 +39,7 @@
             <b>Dest:</b> {{ride.dest}} &nbsp; <b>Arrival Time:</b> {{ride.arrivalTime}} &nbsp; 
             <b>Your Role: </b>{{ride.role}}&nbsp; <b>Order Status:</b> {{ride.status}}
             <br>
-            <a href="/ride/{{ ride.rid }}/{{ride.role}}">Detail</a>
+            <a href="/ride/{{ ride.rid }}/sharer">Detail</a>
           </li>
           {% endfor %}
           </ul>

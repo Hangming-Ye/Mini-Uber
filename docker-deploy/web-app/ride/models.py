@@ -28,7 +28,7 @@ class Ride(models.Model):
     status = models.CharField(default="Open",max_length=10)
     
     driver = models.IntegerField(blank = True, null=True, default=None)
-    shared = models.JSONField(blank = True, null=True, default=None)
+    shared = models.JSONField(blank = True, null=True, default=dict)
     
     def __str__(self) -> str:
         return "Ride ID: " + str(self.id) +" Ride Owner: " + str(self.owner)
@@ -60,8 +60,6 @@ class Ride(models.Model):
             data["driverName"] = driver_obj.username
             data["carNum"] = driver_obj.license_plate_nums
             data["maxCapacity"] = driver_obj.max_passenger
-        
-        print(data)
         return data
 
 
