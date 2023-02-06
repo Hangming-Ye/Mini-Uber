@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+import rideSharing
 
 urlpatterns = [
     path('rideSharing/', include('rideSharing.urls')),
     path('admin/', admin.site.urls),
+    path('',rideSharing.views.login),
     path('ride/', include('ride.urls')),
 ]
