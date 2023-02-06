@@ -63,7 +63,7 @@ def modifyRide(request, rid):
             ride_obj.dest = form.cleaned_data['dest']
             ride_obj.totalPassNum += form.cleaned_data['ownerPassNum']
             ride_obj.save()
-        return redirect('/ride/homepage')
+        return redirect('/ride/homepage/')
     else:
         form = AddRideForm(instance=ride_obj)
         return render(request, 'ride/newRequest.html', {'form': form})
@@ -86,7 +86,7 @@ def addShare(request, rid):
             ride_obj.totalPassNum += form.cleaned_data['Sharer_Passenger_Number']
             ride_obj.shared = share_dict
             ride_obj.save()
-        return redirect('/ride/homepage')
+        return redirect('/ride/homepage/')
     else:
         form = ModifyShareForm()
         return render(request, 'ride/shareRide.html', {'form': form})
@@ -100,7 +100,7 @@ def confirmRide(request, rid):
     ride.driver= request.user.id
     ride.save()
     Ride.addRidtoUser(ride.pk, ride.driver,"driver")
-    return redirect('/ride/homepage')
+    return redirect('/ride/homepage/')
 
 @login_required
 def completeRide(request, rid):
@@ -113,7 +113,7 @@ def completeRide(request, rid):
     Ride.rmRidfromUser(ride.pk, ride.driver)
     sendEmail(ride)
     ride.save()
-    return redirect('/ride/homepage')
+    return redirect('/ride/homepage/')
 
 @login_required
 def SearchRideDriver(request):
