@@ -29,6 +29,6 @@ class my_user(User):
     special_info = models.TextField(blank = True, null=True, default=None)
     max_passenger = models.IntegerField(blank = True, null=True, default=None)
 
-    ride_list = models.JSONField(blank = True, null=True, default=None)
+    ride_list = models.JSONField(blank = True, null=True, default=dict)
     def __str__(self):
         return str(self.id)
