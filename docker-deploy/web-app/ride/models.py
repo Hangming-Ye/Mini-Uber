@@ -83,10 +83,8 @@ class Ride(models.Model):
         if rid_dict is None:
             rid_dict = {}
         if str(rid) in rid_dict:
-            print(rid)
             del rid_dict[str(rid)]
             user_obj.ride_list = rid_dict
-            print(rid_dict)
             user_obj.save()
             return True
         else:

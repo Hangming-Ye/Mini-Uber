@@ -35,11 +35,11 @@ def addRide(request):
     if request.method == 'POST':
         form = AddRideForm(request.POST)
         if form.is_valid():
-            form.cleaned_data['owner']=uid
-            form.cleaned_data['totalPassNum'] = form.cleaned_data['ownerPassNum']
-            ride_obj = Ride.objects.create(**form.cleaned_data)
-            Ride.addRidtoUser(ride_obj.pk, uid,"owner")
+            ride_obj = form.save(commit=False)
+            ride_obj.owner = uid
+            ride_obj.totalPassNum = ride_obj.ownerPassNum
             ride_obj.save()
+            Ride.addRidtoUser(ride_obj.pk, uid,"owner")
             return redirect('/ride/homepage/')
         else:
             return render(request, 'ride/newRequest.html', {'form': form,'error':"Data Error: please check the input format."})
@@ -54,11 +54,12 @@ def modifyRide(request, rid):
         if request.method == 'POST':
             form = AddRideForm(request.POST, instance=ride_obj)
             if form.is_valid():
-                ride_obj.totalPassNum -= ride_obj.ownerPassNum
+                ride_obj = Ride.objects.get(pk=rid)
+                total = ride_obj.totalPassNum + form.cleaned_data['ownerPassNum'] - ride_obj.ownerPassNum
+                ride_obj.totalPassNum = total
                 ride_obj.ownerPassNum = form.cleaned_data['ownerPassNum']
                 ride_obj.carType = form.cleaned_data['carType']
                 ride_obj.specialRequest = form.cleaned_data['specialRequest']
-                ride_obj.totalPassNum += form.cleaned_data['ownerPassNum']
                 ride_obj.arrivalTime = form.cleaned_data['arrivalTime']
                 ride_obj.dest = form.cleaned_data['dest']
                 ride_obj.save()
@@ -143,7 +144,7 @@ def SearchRideDriver(request):
                             ).filter(status="Open"
                             ).filter(Q(specialRequest = driver_obj.special_info)|Q(specialRequest = None)|Q(specialRequest = "")
                             ).filter(Q(carType = driver_obj.vehicle_type)|Q(carType = None)|Q(carType = "")
-                            ).order_by('arrivalTime')
+                            ).order_by('+arrivalTime')
         for rid in driver_ride_list:
             result = result.exclude(pk=rid)
         result_list = list()
