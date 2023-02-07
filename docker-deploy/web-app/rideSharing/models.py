@@ -24,6 +24,7 @@ class my_user(User):
     #password = models.CharField(max_length=256)
     is_driver = models.BooleanField(default=False)
 
+    realName = models.CharField(blank = True, max_length=30, null=True, default=None)
     vehicle_type = models.CharField(choices=CAR_TYPE_CHOICES, max_length=20, blank = True, null=True, default=None)
     license_plate_nums = models.CharField(blank = True, max_length=8, null=True, default=None)
     special_info = models.TextField(blank = True, null=True, default=None)

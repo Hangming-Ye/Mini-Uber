@@ -42,8 +42,9 @@ class ModifyShareForm(Form):
 
 class SearchShareForm(Form):
     Destination = forms.CharField(required=True)
-    Maximum_Arrival_Time = forms.DateTimeField(required=True, help_text='Format: YYYY-MM-DD HH:MM')
     Minimum_Arrival_Time = forms.DateTimeField(required=True, help_text='Format: YYYY-MM-DD HH:MM')
+    Maximum_Arrival_Time = forms.DateTimeField(required=True, help_text='Format: YYYY-MM-DD HH:MM')
+
     
 
 

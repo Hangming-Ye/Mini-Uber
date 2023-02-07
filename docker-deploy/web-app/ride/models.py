@@ -57,7 +57,7 @@ class Ride(models.Model):
             
             driver_obj = User.objects.get(pk=self.driver)
             
-            data["driverName"] = driver_obj.username
+            data["driverName"] = driver_obj.realName
             data["carNum"] = driver_obj.license_plate_nums
             data["maxCapacity"] = driver_obj.max_passenger
             data["dcarType"] = driver_obj.vehicle_type

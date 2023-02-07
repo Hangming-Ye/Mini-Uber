@@ -26,7 +26,6 @@ def getByRid(request, rid, role):
     data = {"ride":ride_dict}
     user = User.objects.get(pk=request.user.pk)
     data["user"] = user
-
     return render(request,'ride/detail.html',data)
 
 @login_required
@@ -57,6 +56,7 @@ def modifyRide(request, rid):
                 ride_obj = Ride.objects.get(pk=rid)
                 total = ride_obj.totalPassNum + form.cleaned_data['ownerPassNum'] - ride_obj.ownerPassNum
                 ride_obj.totalPassNum = total
+                ride_obj.rideType = form.cleaned_data['rideType']
                 ride_obj.ownerPassNum = form.cleaned_data['ownerPassNum']
                 ride_obj.carType = form.cleaned_data['carType']
                 ride_obj.specialRequest = form.cleaned_data['specialRequest']
@@ -145,7 +145,7 @@ def SearchRideDriver(request):
                             ).filter(status="Open"
                             ).filter(Q(specialRequest = driver_obj.special_info)|Q(specialRequest = None)|Q(specialRequest = "")
                             ).filter(Q(carType = driver_obj.vehicle_type)|Q(carType = None)|Q(carType = "")
-                            ).order_by('+arrivalTime')
+                            ).order_by('arrivalTime')
         for rid in driver_ride_list:
             result = result.exclude(pk=rid)
         result_list = list()

@@ -55,15 +55,6 @@ def logout(request):
         auth.logout(request)
     return redirect('/rideSharing/login/')
 
-# homepage:
-#def homepage(request):
-    # Check whether the user is logged in
-#    if request.user.is_authenticated:
-#        return render(request, 'rideSharing/home.html')
-#    else:
-#        return redirect('/rideSharing/login/')
-
-
 # User should be able to view their driver status as well as personal & vehicle info:
 def get_user_info(request):
     # Check whether the user is logged in
@@ -77,6 +68,7 @@ def get_user_info(request):
             'email': user.email,
             'is_driver': user.is_driver,
             'vehicle_type': user.vehicle_type,
+            'real_name': user.realName,
             'license_plate_nums': user.license_plate_nums,
             'special_info': user.special_info,
             'max_passenger': user.max_passenger,
@@ -104,7 +96,6 @@ def driver_de_register(request):
         # remove these rides from this user's ride dictionary
         for rid1 in rid_list:
             ride = Ride.objects.get(pk = rid1)
-
             print(ride.to_dict())
             Ride.rmRidfromUser(rid1,uid)
             ride.status = "Open"
@@ -117,6 +108,7 @@ def driver_de_register(request):
         user.license_plate_nums = None
         user.max_passenger = None
         user.is_driver = False
+        user.realName = None
         user.save()
         return redirect('/rideSharing/get_user_info/')
     else:
@@ -132,6 +124,7 @@ def modify_driver(request):
             user_obj.license_plate_nums = form.cleaned_data['license_plate_nums']
             user_obj.special_info  = form.cleaned_data['Special_Vehicle_Info']
             user_obj.max_passenger = form.cleaned_data['Maximum_Num_Passengers']
+            user_obj.realName = form.cleaned_data['Real_Name']
             user_obj.is_driver = True
             user_obj.save()
         return redirect('/rideSharing/get_user_info/')

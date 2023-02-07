@@ -16,7 +16,8 @@ class addDriverForm(forms.Form):
     ("Pickup Truck", "Pickup Truck"),
     )
     
+    Real_Name = forms.CharField(max_length=30,required=True)
     vehicle_type = forms.ChoiceField(choices=CAR_TYPE_CHOICES, required=True)
     license_plate_nums = forms.CharField(max_length=8,required=True)
     Special_Vehicle_Info = forms.CharField(required=False)
-    Maximum_Num_Passengers = forms.IntegerField(required=True)    
+    Maximum_Num_Passengers = forms.IntegerField(required=True)
