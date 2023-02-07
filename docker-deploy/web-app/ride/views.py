@@ -73,11 +73,12 @@ def modifyRide(request, rid):
         if request.method == 'POST':
             form = ModifyShareRideForm(request.POST, instance=ride_obj)
             if form.is_valid():
-                ride_obj.totalPassNum -= ride_obj.ownerPassNum
+                ride_obj = Ride.objects.get(pk=rid)
+                total = ride_obj.totalPassNum + form.cleaned_data['ownerPassNum'] - ride_obj.ownerPassNum
+                ride_obj.totalPassNum = total
                 ride_obj.ownerPassNum = form.cleaned_data['ownerPassNum']
                 ride_obj.carType = form.cleaned_data['carType']
                 ride_obj.specialRequest = form.cleaned_data['specialRequest']
-                ride_obj.totalPassNum += form.cleaned_data['ownerPassNum']
                 ride_obj.save()
                 return redirect('/ride/homepage/')
             else:
