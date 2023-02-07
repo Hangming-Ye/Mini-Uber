@@ -60,6 +60,8 @@ class Ride(models.Model):
             data["driverName"] = driver_obj.username
             data["carNum"] = driver_obj.license_plate_nums
             data["maxCapacity"] = driver_obj.max_passenger
+            data["dcarType"] = driver_obj.vehicle_type
+            data["dSpecialInfo"] = "None" if driver_obj.special_info is None else driver_obj.special_info
         return data
 
 
@@ -78,9 +80,13 @@ class Ride(models.Model):
     def rmRidfromUser(rid,uid):
         user_obj = User.objects.get(pk=uid)
         rid_dict = user_obj.ride_list
+        if rid_dict is None:
+            rid_dict = {}
         if str(rid) in rid_dict:
+            print(rid)
             del rid_dict[str(rid)]
             user_obj.ride_list = rid_dict
+            print(rid_dict)
             user_obj.save()
             return True
         else:
