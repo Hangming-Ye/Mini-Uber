@@ -14,7 +14,7 @@ def sendEmail(ride):
         send_mail(
             subject='Your order is confirmed',
             message=msg,
-            from_email='13185812783@163.com',
+            from_email='Duke_ECE568_RSS@outlook.com',
             recipient_list=[user_obj.email],
             fail_silently=False
         )

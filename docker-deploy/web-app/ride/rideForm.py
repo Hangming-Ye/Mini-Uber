@@ -22,6 +22,21 @@ class AddRideForm(ModelForm):
             'arrivalTime': 'Format: YYYY-MM-DD HH:MM',
         }
 
+class ModifyShareRideForm(ModelForm):
+    class Meta:
+        model = Ride
+        fields = ['ownerPassNum', 'carType','specialRequest']
+
+        labels = {
+            'ownerPassNum': _('Passenger Number of Owner'),
+            'carType': _('Car Type'),
+            'specialRequest': _('Special Request'),
+        }
+        help_texts = {
+            'carType': 'Optional',
+            'specialRequest': 'Optional',
+        }
+
 class ModifyShareForm(Form):
     Sharer_Passenger_Number = forms.IntegerField(min_value=1)
 
