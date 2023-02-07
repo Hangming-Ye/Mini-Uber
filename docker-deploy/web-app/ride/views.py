@@ -123,8 +123,8 @@ def completeRide(request, rid):
     ride = Ride.objects.get(pk = rid)
     if ride.driver == request.user.id: 
         ride.status="Complete"
-    if share_dict is None:
-        share_dict = {}
+    if ride.shared is None:
+        ride.shared = {}
     for uid in list(ride.shared.keys()):
         Ride.rmRidfromUser(ride.pk, uid)
     Ride.rmRidfromUser(ride.pk,ride.owner)
