@@ -9,24 +9,34 @@
   <body style="text-align: center;">
     <h1 class="text-center text-success">Please Enter Your Search Condition</h1>
     <form action="" method="post" style="text-align: center;">
-    {% csrf_token %}
-    {% for field in form %}
-      <div class="fieldWrapper">
-          {{ field.errors }}
-          <label> 
-              {{ field.label_tag }}
-          </label>
-        <div>
-            {{ field }}
+      {% csrf_token %}
+      {%if error%}
+      <script>
+        alert("Error: Input format Wrong. Please check your input format");
+      </script>
+      {% endif %}
+      {% for field in form %}
+        <div class="fieldWrapper">
+            <br>
+            <label> 
+                {{ field.label_tag }}
+            </label>
+          <div>
+              {{ field }}
+              {% if field.help_text %}
+              <br>
+              <i>{{ field.help_text }}</i>
+              <br>
+              {% endif %}
+          </div>
         </div>
-      </div>
-    {% endfor %}
-    <br>
-    <input type="submit" value="Submit">
-    </form>
-    <a href="/ride/homepage/" style="text-align: center;">Cancel and Back to Home</a>
-    <br>
-    <a><b>PS: date time format: YYYY-MM-DD HH:MM (24H)</b></a>
+      {% endfor %}
+      <br>
+      <input type="submit" value="Submit">
+      </form>
+      <br>
+      <a href="/ride/homepage/" style="text-align: center;">Cancel and Back to Home</a>
+      <br>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
   </body>
 </html>

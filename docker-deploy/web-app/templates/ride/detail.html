@@ -60,6 +60,8 @@
                   <li><b>Driver Name:</b> &nbsp; {{ride.driverName}}</li>
                   <li><b>License Plate Number:</b> &nbsp; {{ride.carNum}}</li>
                   <li><b>Car Maximum Capacity:</b> &nbsp; {{ride.maxCapacity}}</li>
+                  <li><b>Driver Car Type:</b> &nbsp; {{ride.dcarType}}</li>
+                  <li><b>Special Info of Driver:</b> &nbsp; {{ride.dSpecialInfo}}</li>
               </ul>
               {% endif %}
               {% else %}
@@ -68,20 +70,22 @@
           </div>
           <div id = "Ride Management">
               {% if ride %}
+                {% if ride.status == "Open" %}
                   {% if ride.role == "owner" %}
                   <a href="/ride/modify/{{ ride.rid }}">Modify Ride Info</a>
                   {% endif %}
                   {% if ride.role == "sharer" %}
                   <a href="/ride/share/{{ ride.rid }}">Modify/Join Sharing Info</a>
                   {% endif %}
-                  {% if ride.role == "driver" %}
-                      {% if ride.status == "Open" %}
-                      <a href="/ride/confirm/{{ ride.rid }}">Confirm</a>
-                      {% endif %}
-                      {% if ride.status == "Confirmed" %}
-                      <a href="/ride/complete/{{ ride.rid }}">Complete</a>
-                      {% endif %}
-                  {% endif %}
+                {%endif%}
+                {% if ride.role == "driver" %}
+                    {% if ride.status == "Open" %}
+                    <a href="/ride/confirm/{{ ride.rid }}">Confirm</a>
+                    {% endif %}
+                    {% if ride.status == "Confirmed" %}
+                    <a href="/ride/complete/{{ ride.rid }}">Complete</a>
+                    {% endif %}
+                {% endif %}
               {% endif %}
           </div>
         </div>

@@ -2,16 +2,12 @@ from django.http import HttpResponse
 from django.shortcuts import *
 from .models import Ride
 from rideSharing.models import my_user as User
-import datetime
-from django.views.decorators.csrf import csrf_exempt
-from django.http.multipartparser import MultiPartParser
 from .rideUtils import *
 from django.db.models import Q
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .rideForm import *
 
-# 未实现：异常抛出处理, check valid
 @login_required
 def index(request):
     if request.user.is_authenticated:
@@ -44,7 +40,9 @@ def addRide(request):
             ride_obj = Ride.objects.create(**form.cleaned_data)
             Ride.addRidtoUser(ride_obj.pk, uid,"owner")
             ride_obj.save()
-        return redirect('/ride/homepage/')
+            return redirect('/ride/homepage/')
+        else:
+            return render(request, 'ride/newRequest.html', {'form': form,'error':"Data Error: please check the input format."})
     else:
         form = AddRideForm()
         return render(request, 'ride/newRequest.html', {'form': form})
@@ -52,21 +50,40 @@ def addRide(request):
 @login_required
 def modifyRide(request, rid):
     ride_obj = Ride.objects.get(pk=rid)
-    if request.method == 'POST':
-        form = AddRideForm(request.POST, instance=ride_obj)
-        if form.is_valid():
-            ride_obj.totalPassNum -= ride_obj.ownerPassNum
-            ride_obj.ownerPassNum = form.cleaned_data['ownerPassNum']
-            ride_obj.carType = form.cleaned_data['carType']
-            ride_obj.specialRequest = form.cleaned_data['specialRequest']
-            ride_obj.arrivalTime = form.cleaned_data['arrivalTime']
-            ride_obj.dest = form.cleaned_data['dest']
-            ride_obj.totalPassNum += form.cleaned_data['ownerPassNum']
-            ride_obj.save()
-        return redirect('/ride/homepage/')
+    if ride_obj.shared == None or ride_obj.shared == dict():
+        if request.method == 'POST':
+            form = AddRideForm(request.POST, instance=ride_obj)
+            if form.is_valid():
+                ride_obj.totalPassNum -= ride_obj.ownerPassNum
+                ride_obj.ownerPassNum = form.cleaned_data['ownerPassNum']
+                ride_obj.carType = form.cleaned_data['carType']
+                ride_obj.specialRequest = form.cleaned_data['specialRequest']
+                ride_obj.totalPassNum += form.cleaned_data['ownerPassNum']
+                ride_obj.arrivalTime = form.cleaned_data['arrivalTime']
+                ride_obj.dest = form.cleaned_data['dest']
+                ride_obj.save()
+                return redirect('/ride/homepage/')
+            else:
+                return render(request, 'ride/newRequest.html', {'form': form,'error':"Data Error: please check the input format."})
+        else:
+            form = AddRideForm(instance=ride_obj)
+            return render(request, 'ride/newRequest.html', {'form': form})
     else:
-        form = AddRideForm(instance=ride_obj)
-        return render(request, 'ride/newRequest.html', {'form': form})
+        if request.method == 'POST':
+            form = ModifyShareRideForm(request.POST, instance=ride_obj)
+            if form.is_valid():
+                ride_obj.totalPassNum -= ride_obj.ownerPassNum
+                ride_obj.ownerPassNum = form.cleaned_data['ownerPassNum']
+                ride_obj.carType = form.cleaned_data['carType']
+                ride_obj.specialRequest = form.cleaned_data['specialRequest']
+                ride_obj.totalPassNum += form.cleaned_data['ownerPassNum']
+                ride_obj.save()
+                return redirect('/ride/homepage/')
+            else:
+                return render(request, 'ride/modifyRequest.html', {'form': form})
+        else:
+            form = ModifyShareRideForm(instance=ride_obj)
+            return render(request, 'ride/modifyRequest.html', {'form': form})
 
 @login_required
 def addShare(request, rid):
@@ -91,14 +108,13 @@ def addShare(request, rid):
         form = ModifyShareForm()
         return render(request, 'ride/shareRide.html', {'form': form})
 
-
-
 @login_required
 def confirmRide(request, rid):
     ride = Ride.objects.get(pk = rid)
     ride.status="Confirmed"
     ride.driver= request.user.id
     ride.save()
+    sendEmail(ride)
     Ride.addRidtoUser(ride.pk, ride.driver,"driver")
     return redirect('/ride/homepage/')
 
@@ -107,11 +123,12 @@ def completeRide(request, rid):
     ride = Ride.objects.get(pk = rid)
     if ride.driver == request.user.id: 
         ride.status="Complete"
+    if share_dict is None:
+        share_dict = {}
     for uid in list(ride.shared.keys()):
         Ride.rmRidfromUser(ride.pk, uid)
     Ride.rmRidfromUser(ride.pk,ride.owner)
     Ride.rmRidfromUser(ride.pk, ride.driver)
-    sendEmail(ride)
     ride.save()
     return redirect('/ride/homepage/')
 
@@ -144,6 +161,8 @@ def SearchRideSharer(request):
         form = SearchShareForm(request.POST)
         sharer_obj = User.objects.get(pk=uid)
         if form.is_valid():
+            if sharer_obj.ride_list == None:
+                sharer_obj.ride_list  = dict()
             sharer_ride_list = list(sharer_obj.ride_list.keys())
             max_time = form.cleaned_data['Maximum_Arrival_Time']
             min_time = form.cleaned_data['Minimum_Arrival_Time']
@@ -161,6 +180,8 @@ def SearchRideSharer(request):
                 ride = ride.to_dict()
                 result_list.append(ride)
             return render(request,'ride/shareSearchPage.html',{'rideList':result_list})
+        else:
+            return render(request, 'ride/shareForm.html', {'form': form,'error':"Data Error: please check the input format."})
     else:
         form = SearchShareForm()
         return render(request, 'ride/shareForm.html', {'form': form})

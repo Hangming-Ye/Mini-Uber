@@ -4,30 +4,46 @@ from .models import Ride
 from django.utils.translation import gettext_lazy as _
 
 class AddRideForm(ModelForm):
-
     class Meta:
         model = Ride
         fields = ['rideType', 'ownerPassNum', 'arrivalTime', 'dest','carType','specialRequest']
 
-        help_texts = {
-            'carType': _('Optional'),
-            'SpecialRequest': _('Optional'),
-            'arrivalTime': _('Format: YYYY-MM-DD HH:MM'),
+        labels = {
+            'rideType': _('Is Sharable'),
+            'ownerPassNum': _('Passenger Number of Owner'),
+            'dest': _('Destination'),
+            'carType': _('Car Type'),
+            'arrivalTime': _('Arrival Time'),
+            'specialRequest': _('Special Request'),
         }
-  
-    # def __init__(self,*args,**kwargs):
-    #     super(ModelForm,self).__init__(*args,**kwargs)
-  
-    #     for fieldname in self.base_fields:
-    #         field = self.base_fields[fieldname]
+        help_texts = {
+            'carType': 'Optional',
+            'specialRequest': 'Optional',
+            'arrivalTime': 'Format: YYYY-MM-DD HH:MM',
+        }
+
+class ModifyShareRideForm(ModelForm):
+    class Meta:
+        model = Ride
+        fields = ['ownerPassNum', 'carType','specialRequest']
+
+        labels = {
+            'ownerPassNum': _('Passenger Number of Owner'),
+            'carType': _('Car Type'),
+            'specialRequest': _('Special Request'),
+        }
+        help_texts = {
+            'carType': 'Optional',
+            'specialRequest': 'Optional',
+        }
 
 class ModifyShareForm(Form):
     Sharer_Passenger_Number = forms.IntegerField(min_value=1)
 
 class SearchShareForm(Form):
     Destination = forms.CharField(required=True)
-    Maximum_Arrival_Time = forms.DateTimeField(required=True)
-    Minimum_Arrival_Time = forms.DateTimeField(required=True)
+    Maximum_Arrival_Time = forms.DateTimeField(required=True, help_text='Format: YYYY-MM-DD HH:MM')
+    Minimum_Arrival_Time = forms.DateTimeField(required=True, help_text='Format: YYYY-MM-DD HH:MM')
     
 
 

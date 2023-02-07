@@ -104,10 +104,13 @@ def driver_de_register(request):
         # remove these rides from this user's ride dictionary
         for rid1 in rid_list:
             ride = Ride.objects.get(pk = rid1)
-            ride.status = 0
+
+            print(ride.to_dict())
+            Ride.rmRidfromUser(rid1,uid)
+            ride.status = "Open"
             ride.driver = None
             ride.save()
-            Ride.rmRidfromUser(rid1,uid)
+        user = User.objects.get(pk = request.user.pk)
         # Change all driver info into None in this user object and is_driver into False
         user.vehicle_type = None
         user.special_info = None
@@ -118,30 +121,6 @@ def driver_de_register(request):
         return redirect('/rideSharing/get_user_info/')
     else:
         return render(request, 'ride/driver_page.html')
-
-# # User should be able to edit their driver status as well as personal & vehicle info:
-# # It is used for Driver Registration and edit driver info
-# def modify_driver(request):
-#     # Check whether the user is logged in
-#     if request.user.is_authenticated == False:
-#         return redirect('/rideSharing/login/')
-#     user = User.objects.get(pk = request.user.pk)
-#     if request.method == 'POST':
-#         # username = request.POST.get('username')
-#         # user.username = username
-#         vehicle_type = request.POST.get('vehicle_type')
-#         license_plate_nums = request.POST.get('license_plate_nums')
-#         special_info = request.POST.get('special_info')
-#         max_passenger = request.POST.get('max_passenger')
-#         user.vehicle_type = vehicle_type
-#         user.special_info = special_info
-#         user.license_plate_nums = license_plate_nums
-#         user.max_passenger = max_passenger
-#         # Whether it is editing driver information or registering as a driver, is_driver is always True
-#         user.is_driver = True
-#         user.save()        
-#         return redirect('/rideSharing/get_user_info/')
-#     return render(request, 'rideSharing/modify_driver.html')
 
 def modify_driver(request):
     uid = request.user.id
