@@ -71,7 +71,7 @@ class Ride(models.Model):
         if rid_dict is None:
             rid_dict = {}
         if rid in rid_dict:
-            return False # already exist
+            return False
         rid_dict[rid] = role
         user_obj.ride_list = rid_dict
         user_obj.save()
@@ -88,4 +88,4 @@ class Ride(models.Model):
             user_obj.save()
             return True
         else:
-            return False # not exist
+            return False
