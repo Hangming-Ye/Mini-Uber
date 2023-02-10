@@ -15,7 +15,6 @@ def user_reg(request):
         confirm_password = request.POST.get('confirm_password')
         # username already exists:
         if User.objects.filter(username=username):
-            # ?????? user_reg.html ??????
             return render(request, 'rideSharing/user_reg.html', {'error_reg': 'Username already exists!!!'})
         else:
             if password == confirm_password:
@@ -37,7 +36,6 @@ def login(request):
         password = request.POST.get('password')
         if User.objects.filter(username=username):
             user = auth.authenticate(username=username, password=password)
-            # user.is_active???????????
             if user is not None:
                 auth.login(request, user)
                 return redirect('/ride/homepage/', {'user', user})
@@ -82,12 +80,8 @@ def driver_de_register(request):
         user = User.objects.get(pk = request.user.pk)
         uid = request.user.pk
     # traverse all rides of this user, and get the incomplete rides in which the role of this user is driver
-    # ??????????????? incomplete???????
-    # ?????????????value是这种形式嘛？这样写可以嘛？？？？？？
-    # rid_list = list(filter(lambda x: user.ride_list[x] == 'driver', user.ride_list))
         rid_list = []
         # if the user does not have that kind of rides
-        # ?????????????
         if user.ride_list:
             for rid0 in user.ride_list.keys():
                 if user.ride_list[rid0] == 'driver':

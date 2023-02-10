@@ -1,6 +1,32 @@
 # Ride Sharing Service
 
-Functions of this web-app:
+## Description
+Ride Sharing Service is a Django app, This web-app will let users request, drive for, and join rides.
+
+## Deployment
+
+1. Install
+   ```bash
+   sudo apt-get install gcc g++ make valgrind git postgresql libpq-dev python python3-pip 
+   sudo pip3 install django psycopg2
+   sudo apt-get install libssl-dev libxerces-c-dev libpqxx-dev manpages-posix-dev
+   ```
+2. Set up Email and CSRF Token in /HW1/docker-deploy/web-app/hw1/setting.py
+   ```python
+   ALLOWED_HOSTS = ['0.0.0.0','127.0.0.1','localhost']
+   CSRF_TRUSTED_ORIGINS= ['http://0.0.0.0:8000','http://127.0.0.1:8000','http://localhost:8000']
+   EMAIL_USE_TLS =         # True/False
+   EMAIL_USE_SSL =         # True/False
+   EMAIL_HOST =            # SMTP Host Address
+   EMAIL_PORT =            # Port of SMTP
+   EMAIL_HOST_USER =       # Mail Address
+   EMAIL_HOST_PASSWORD =   # Password/Token
+   ```
+3. Run in the /HW1 using
+   ```bash
+   sudo docker-compose up
+   ```
+## Function
 
 User: 
 1. Create Account
@@ -45,5 +71,4 @@ sharer:
 1. view the ride status, similarly to a ride owner
    - Ride Status Viewing (Owner / Sharer): For open ride requests, this should show the current ride details (from the original request + any updates due to sharers joining the ride). For confirmed ride requests, the driver and vehicle details should also be shown.
 2. edit their ride status as long as the ride is open.
-   - The "edit status" would included the ability to change info like the destination, time, etc. up until the ride is confirmed.
-   - 如果乘车所有者去编辑乘车并更改与已经加入该乘车的共享者冲突的信息，会发生什么情况:1.自动取消共享者的行程（并通知他们）2.不允许更改共享者已经加入的行程（即使它仍然开放）。
+   - The "edit status" would included the ability to change info like the number of sharer until the ride is confirmed.

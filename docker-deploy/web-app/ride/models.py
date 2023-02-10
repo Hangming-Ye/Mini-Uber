@@ -33,6 +33,7 @@ class Ride(models.Model):
     def __str__(self) -> str:
         return "Ride ID: " + str(self.id) +" Ride Owner: " + str(self.owner)
 
+    # object to data
     def to_dict(self):
         data = {}
         data["rid"] = self.pk
@@ -65,6 +66,7 @@ class Ride(models.Model):
         return data
 
 
+    # add ride to ride list under user
     def addRidtoUser(rid, uid, role):
         user_obj = User.objects.get(id=uid)
         rid_dict = user_obj.ride_list
@@ -77,6 +79,7 @@ class Ride(models.Model):
         user_obj.save()
         return True
     
+    # remove ride from ride list under user
     def rmRidfromUser(rid,uid):
         user_obj = User.objects.get(pk=uid)
         rid_dict = user_obj.ride_list

@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .rideForm import *
 
+# get the home page of user which contains all ride information
 @login_required
 def index(request):
     if request.user.is_authenticated:
@@ -18,6 +19,7 @@ def index(request):
     else:
         return redirect('rideSharing/login/')
 
+#get the detail of the ride
 @login_required
 def getByRid(request, rid, role):
     ride = get_object_or_404(Ride, pk=rid)
@@ -28,6 +30,7 @@ def getByRid(request, rid, role):
     data["user"] = user
     return render(request,'ride/detail.html',data)
 
+# owner make a new ride request
 @login_required
 def addRide(request):
     uid = request.user.id
@@ -46,6 +49,7 @@ def addRide(request):
         form = AddRideForm()
         return render(request, 'ride/newRequest.html', {'form': form})
 
+# owner modify the ride
 @login_required
 def modifyRide(request, rid):
     ride_obj = Ride.objects.get(pk=rid)
@@ -87,6 +91,7 @@ def modifyRide(request, rid):
             form = ModifyShareRideForm(instance=ride_obj)
             return render(request, 'ride/modifyRequest.html', {'form': form})
 
+# sharer join / modify the ride
 @login_required
 def addShare(request, rid):
     uid = request.user.id
@@ -110,6 +115,7 @@ def addShare(request, rid):
         form = ModifyShareForm()
         return render(request, 'ride/shareRide.html', {'form': form})
 
+# driver confirm the ride
 @login_required
 def confirmRide(request, rid):
     ride = Ride.objects.get(pk = rid)
@@ -120,6 +126,7 @@ def confirmRide(request, rid):
     Ride.addRidtoUser(ride.pk, ride.driver,"driver")
     return redirect('/ride/homepage/')
 
+# driver complete the ride
 @login_required
 def completeRide(request, rid):
     ride = Ride.objects.get(pk = rid)
@@ -134,6 +141,7 @@ def completeRide(request, rid):
     ride.save()
     return redirect('/ride/homepage/')
 
+# driver search for aviliable rides
 @login_required
 def SearchRideDriver(request):
     if request.method == 'GET':
@@ -156,6 +164,7 @@ def SearchRideDriver(request):
     else:
         return HttpResponse("method wrong")
 
+# sharer search for aviliable rides
 @login_required
 def SearchRideSharer(request):
     if request.method == 'POST':

@@ -1,0 +1,49 @@
+01/28:
+We first thought about the classes and methods required by the project, which correspond to models and views in Django. For the relationship between user and driver, we currently consider inheritance. But when we write user registration, login, logout, and driver registration, we find that the inheritance relationship between driver and user will make the problem very complicated. And we want to take advantage of the user authentication system that comes with Django.
+
+To smooth our implementation, we search for complex database relationships in Django, such as many-to-one and many-to-many. But we finally decide to implement driver and user as the same class (my_user class). Because we find three arguments of field types: blank, null and default. For the fields unique to the driver relative to ordinary users, we set blank = True, null=True, default=None. This means that these fields can be allowed to be left blank and DB doesn't require a value. Therefore, when a user registers an account, we can leave these fields blank. We can then assign values to them when driver registration is implemented. For using Django's authentication system, we let my_user inherit from the User class which is the core of the Django's authentication system.
+
+01/29:
+We find that there are many types of cars, and even if different users want to input the same car type, since we currently set the car type as CharField, it is difficult for the program to conclude that these two users have the same car type (user input case, spaces, spelling errors, etc.). This will affect the implementation of other functions later, such as searching for open ride requests based on the ride request attributes which include car type.
+
+To solve this problem, we find another argument to the field type, choices, which is a sequence of 2-tuples that serves as choices for this field. If this argument is given, the default form widget will be a selection box instead of a standard text field and will restrict the selection to the given choice.
+
+01/30:
+We find that our previous database is not suitable for development and want to change it, basically it is to change the status from int to char in ride class and add car type choice. However, it causes the conflict when we are using migrate. We use -fake and –sync-db as suggested in the Django document but it doesn’t help. So, we have no way but to delete the whole database and create a new one. After this, we realize that the postgresql is a fragile database and may cause error when you introduce a new change. It is better for us to think about database structure first and then start fill in data.
+
+01/31:
+Requirement: user should be able to search for sharable, open ride requests (by destination, arrival window, and # of passengers).
+
+For this requirement, we realize that we do not know the limit on the number of passengers from the sharer's party when the ride is open. This is because the total number of passengers is known at the time the driver confirms the ride. Therefore, we decide that the sharer can filter the open rides available through the destination, arrival window and then input the number of passengers from their party. to filter the rides that can be confirmed. After that, the driver will filter the rides that can be confirmed by comparing their total number of passengers with the current number of passengers of the open ride (number of passengers from the sharer's party + number of passengers from the owner’s party).
+
+02/01:
+We find that both the owner and the sharer can edit/modify the ride request until it is confirmed, which can lead to conflicts between them in editing information.
+
+To solve this problem and to fit the real-world scenario, we decide that
+•	Owner: In the case that the ride to be modified has sharers and is open, the owner can edit/modify the number of passengers from the owner's party, the type of car, and special requests. In case the ride to be modified does not have a sharer but is open, the owner can edit/modify all requested attributes for the ride.
+•	Sharer: In case the ride to be modified is open, the sharer can modify the number of passengers in their party.
+
+02/02:
+Our initial idea is to write a separate backend and front end, and our API is based on the client – server architecture. However, when we use the java script to send the request, we find that the render() function of the Django actually return a static page that cannot receive a response. The HttpResponse will overwrite the page and it fails. Therefore, we rewrite our API document and divide some functions like find search into the utility class, which means it can reuse and are not required to return a response. Also, to combine the data sending function into the rendering, we also change the URL and ride some function in the models to help convert Object To Dict Data.
+
+02/03:
+When using POST instrcution to pass some data like search condition, ride detail or something. We first by passing a dict and then write a HTML page to fill in the label and get them after post request. Then, by looking the Django Document, we find form class which could inherit our mata data auto generate a form. For the HTML page, we could use a for loop to list every label and box. Therefore, we write a rideForm function to make all of our forms and a HTML tempplate to fill in. Also, the form object is easy to valid the input, which save us a lot of time.
+
+02/03:
+We found that a user will not be able to cancel his driver status and become a pure user after registering as a driver. 
+
+In order to make our web-app more logical, we added the feature that a driver can cancel his driver status to become a pure user. Also, we set the open rides under driver status to open, driver field in these rides object to None, and remove these rides from this user's ride list.
+
+02/04:
+We find a fatal bug in our code because our user class has a ride_list field, which is a dictionary of all the rides related to the user. The key to the dictionary is the id of the ride object, and the value is the role of the user in the ride. This means that at the time of initial user registration, the ride_list is empty. In most of our functions we don't exclude the case where the ride_list is empty (corner case) and call user_obj.ride_list.keys() directly, which will report an error.
+
+02/04:
+During testing, we find that when the user fills in the wrong arrival time format and submits it, the submission fails and the page jumps directly to the homepage without giving any hint to the user.
+
+To fix this, we add a hint and specification for the arrival time format on the page and a hint to the user when the user fills in the wrong arrival time format.
+
+02/05:
+When testing our deregistration function, we find that after the driver deregister, the driver order does not delete from the home page. However, by adding some print function, we find that we actually delete these list from the ride list of the user. After reviewing our code, we find that it was we firstly get the user object and store it into a user variable, then, we delete the ride from ride list using another function and save user object, after that, we clean the driver info and save the first user object, which then stores the previous value back and overwrite it. 
+
+The solution is very simple, we just reread the user object after deleting driver ride from ride list.  In the future web-app development with Django, we will pay more attention to the problem of overwriting stored information by calling two functions in a row.
+

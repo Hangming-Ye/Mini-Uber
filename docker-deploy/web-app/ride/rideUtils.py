@@ -1,6 +1,8 @@
 from ride.models import Ride
 from rideSharing.models import my_user as User
 from django.core.mail import send_mail
+
+# send email to owner and sharer in ride
 def sendEmail(ride):
     user_list = [ride.owner]
     if ride.shared:
@@ -18,7 +20,8 @@ def sendEmail(ride):
             recipient_list=[user_obj.email],
             fail_silently=False
         )
-        
+
+# get the ride under uid 
 def getByUid(request):
     user_obj = User.objects.get(pk=request.user.pk)
     if user_obj.ride_list == None or user_obj.ride_list == {}:
